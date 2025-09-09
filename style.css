@@ -96,3 +96,10 @@ button {
   max-height: 80%;
   border-radius: 20px;
 }
+
+/* Fix tombol Tap to Start agar bisa diklik di semua device */
+#splash button, #startBtn {
+  position: relative;
+  z-index: 9999;
+  pointer-events: auto;
+}
