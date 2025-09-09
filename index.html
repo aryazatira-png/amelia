@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amell Birthday Web</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Splash Screen -->
+  <div id="splash" class="layer active">
+    <h1 class="glow-text">Amelllllll, I promise this will be your first experience</h1>
+    <button onclick="startExperience()">Tap to Start</button>
+  </div>
+
+  <!-- Layer 1 Countdown -->
+  <div id="layer1" class="layer hidden">
+    <video autoplay muted loop class="bg-video">
+      <source src="assets/video1.mp4" type="video/mp4">
+    </video>
+    <div class="overlay"></div>
+    <h2>Countdown Menuju 11 Oktober 2025</h2>
+    <p id="countdown"></p>
+    <p id="umur"></p>
+    <button onclick="prevLayer()">⬅ Back</button>
+    <button onclick="nextLayer()">Next ➡</button>
+  </div>
+
+  <!-- Layer 2 Teks -->
+  <div id="layer2" class="layer hidden">
+    <video autoplay muted loop class="bg-video">
+      <source src="assets/video2.mp4" type="video/mp4">
+    </video>
+    <div class="overlay"></div>
+    <h2 class="glow-text">Teks Cinematic Slide Kedua</h2>
+    <p>Ganti teks ini sesuai kebutuhan lu</p>
+    <button onclick="prevLayer()">⬅ Back</button>
+    <button onclick="nextLayer()">Next ➡</button>
+  </div>
+
+  <!-- Layer 3 Galeri Foto -->
+  <div id="layer3" class="layer hidden">
+    <h2>Galeri Kenangan</h2>
+    <div class="gallery">
+      <img src="assets/foto1.jpg" alt="Foto 1" onclick="openLightbox(this)">
+      <img src="assets/foto2.jpg" alt="Foto 2" onclick="openLightbox(this)">
+      <img src="assets/foto3.jpg" alt="Foto 3" onclick="openLightbox(this)">
+      <img src="assets/foto4.jpg" alt="Foto 4" onclick="openLightbox(this)">
+      <img src="assets/foto5.jpg" alt="Foto 5" onclick="openLightbox(this)">
+    </div>
+    <button onclick="prevLayer()">⬅ Back</button>
+  </div>
+
+  <!-- Lightbox -->
+  <div id="lightbox" class="lightbox hidden" onclick="closeLightbox()">
+    <img id="lightbox-img" src="">
+    <p id="lightbox-caption"></p>
+  </div>
+
+  <!-- Musik -->
+  <audio id="bg-music" loop>
+    <source src="assets/aboutyou.mp3" type="audio/mp3">
+  </audio>
+
+  <script src="script.js"></script>
+</body>
+</html>
