@@ -32,21 +32,37 @@ function closeLightbox() {
 }
 
 // Countdown + umur
-let countdownEl = document.getElementById("countdown");
-let umurEl = document.getElementById("umur");
+function updateAge() {
+    const birthDate = new Date('2006-10-11T00:00:00');
+    const now = new Date();
 
-let startDate = new Date("October 11, 2006 00:00:00").getTime();
+    let years = now.getFullYear() - birthDate.getFullYear();
+    let months = now.getMonth() - birthDate.getMonth();
+    let days = now.getDate() - birthDate.getDate();
 
-setInterval(() => {
-  let now = new Date().getTime();
-  let distance = targetDate - now;
-  let days = Math.floor(distance / (1000 * 60 * 60 * 24));
-  countdownEl.innerHTML = days + " umur acmelia okta ramadani";
+    if (days < 0) {
+        months--;
+        // Dapatkan jumlah hari di bulan sebelumnya
+        const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+        days += prevMonth.getDate();
+    }
 
-  let umurMs = now - startDate;
-  let umurYears = umurMs / (1000 * 60 * 60 * 24 * 365.25);
-  umurEl.innerHTML = "Umur: " + umurYears.toFixed(8) + " tahun";
-}, 1000);
+    if (months < 0) {
+        years--;
+        months += 12;
+    }
+
+    // Format tampilannya
+    const ageString = `${years} tahun, ${months} bulan, ${days} hari`;
+
+    // Ganti #countdown dengan id/elemen yang dipakai untuk menampilkan umur
+    document.getElementById('countdown').textContent = ageString;
+}
+
+// Update setiap detik
+setInterval(updateAge, 1000);
+// Jalankan saat pertama kali
+updateAge();
 
 // Autoplay musik setelah halaman terbuka
 window.addEventListener('load', () => {
