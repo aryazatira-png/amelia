@@ -5,8 +5,11 @@ const audio = document.getElementById('bg-music');
 function startExperience() {
   document.getElementById('splash').classList.remove('active');
   document.getElementById('splash').classList.add('hidden');
-  document.getElementById('layer1').classList.remove('hidden');
-  document.getElementById('layer1').classList.add('active');
+  
+  // Update currentLayer to 1 to correctly show the first layer
+  currentLayer = 1; 
+  layers[currentLayer].classList.add('active');
+  audio.play();
 }
 
 const btn = document.getElementById('startBtn');
@@ -14,13 +17,6 @@ btn.addEventListener('touchstart', function(e) {
   e.preventDefault();
   startExperience();
 }, {passive: false});
-
-function startExperience() {
-  layers[currentLayer].classList.remove('active');
-  currentLayer = 1;
-  layers[currentLayer].classList.add('active');
-  audio.play();
-}
 
 function nextLayer() {
   layers[currentLayer].classList.remove('active');
@@ -55,7 +51,6 @@ function updateAge() {
 
     if (days < 0) {
         months--;
-        // Dapatkan jumlah hari di bulan sebelumnya
         const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
         days += prevMonth.getDate();
     }
@@ -65,16 +60,11 @@ function updateAge() {
         months += 12;
     }
 
-    // Format tampilannya
     const ageString = `${years} tahun, ${months} bulan, ${days} hari`;
-
-    // Ganti #countdown dengan id/elemen yang dipakai untuk menampilkan umur
     document.getElementById('countdown').textContent = ageString;
 }
 
-// Update setiap detik
 setInterval(updateAge, 1000);
-// Jalankan saat pertama kali
 updateAge();
 
 // Autoplay musik setelah halaman terbuka
@@ -88,9 +78,7 @@ window.addEventListener('load', () => {
     document.removeEventListener('touchstart', playMusic);
   };
 
-  // coba play langsung
   music.play().catch(() => {
-    // kalau gagal, paksa jalan setelah user klik layar
     document.addEventListener('click', playMusic);
     document.addEventListener('touchstart', playMusic);
   });
