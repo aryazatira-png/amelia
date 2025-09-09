@@ -36,35 +36,16 @@ let countdownEl = document.getElementById("countdown");
 let umurEl = document.getElementById("umur");
 
 let startDate = new Date("October 11, 2006 00:00:00").getTime();
-let targetDate = new Date("October 11, 2025 00:00:00").getTime();
 
 setInterval(() => {
   let now = new Date().getTime();
   let distance = targetDate - now;
   let days = Math.floor(distance / (1000 * 60 * 60 * 24));
-  countdownEl.innerHTML = days + " hari menuju 11 Oktober 2025";
+  countdownEl.innerHTML = days + " umur acmelia okta ramadani";
 
   let umurMs = now - startDate;
   let umurYears = umurMs / (1000 * 60 * 60 * 24 * 365.25);
   umurEl.innerHTML = "Umur: " + umurYears.toFixed(8) + " tahun";
 }, 1000);
 
-// Autoplay musik setelah halaman terbuka
-window.addEventListener('load', () => {
-  const music = document.getElementById('bg-music');
-  const playMusic = () => {
-    music.play().catch(() => {
-      console.log("Autoplay diblokir, tunggu interaksi user");
-    });
-    document.removeEventListener('click', playMusic);
-    document.removeEventListener('touchstart', playMusic);
-  };
-
-  // coba play langsung
-  music.play().catch(() => {
-    // kalau gagal, paksa jalan setelah user klik layar
-    document.addEventListener('click', playMusic);
-    document.addEventListener('touchstart', playMusic);
-  });
-});
 
