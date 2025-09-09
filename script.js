@@ -2,6 +2,12 @@ let currentLayer = 0;
 const layers = document.querySelectorAll('.layer');
 const audio = document.getElementById('bg-music');
 
+const btn = document.getElementById('startBtn');
+btn.addEventListener('touchstart', function(e) {
+  e.preventDefault();
+  startExperience();
+}, {passive: false});
+
 function startExperience() {
   layers[currentLayer].classList.remove('active');
   currentLayer = 1;
