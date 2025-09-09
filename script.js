@@ -48,4 +48,21 @@ setInterval(() => {
   umurEl.innerHTML = "Umur: " + umurYears.toFixed(8) + " tahun";
 }, 1000);
 
+// Autoplay musik setelah halaman terbuka
+window.addEventListener('load', () => {
+  const music = document.getElementById('bg-music');
+  const playMusic = () => {
+    music.play().catch(() => {
+      console.log("Autoplay diblokir, tunggu interaksi user");
+    });
+    document.removeEventListener('click', playMusic);
+    document.removeEventListener('touchstart', playMusic);
+  };
 
+  // coba play langsung
+  music.play().catch(() => {
+    // kalau gagal, paksa jalan setelah user klik layar
+    document.addEventListener('click', playMusic);
+    document.addEventListener('touchstart', playMusic);
+  });
+});
