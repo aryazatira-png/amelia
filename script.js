@@ -2,6 +2,13 @@ let currentLayer = 0;
 const layers = document.querySelectorAll('.layer');
 const audio = document.getElementById('bg-music');
 
+function startExperience() {
+  document.getElementById('splash').classList.remove('active');
+  document.getElementById('splash').classList.add('hidden');
+  document.getElementById('layer1').classList.remove('hidden');
+  document.getElementById('layer1').classList.add('active');
+}
+
 const btn = document.getElementById('startBtn');
 btn.addEventListener('touchstart', function(e) {
   e.preventDefault();
