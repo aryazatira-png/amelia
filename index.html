@@ -59,25 +59,3 @@
 
 <!-- Musik -->
 <audio id="bg-music" src="asset/musik.mp3" autoplay loop></audio>
-
-
-<script>
-  function startMusic() {
-    const music = document.getElementById('bg-music');
-    music.play().catch(err => {
-      console.log("Autoplay diblokir, user harus klik tombol dulu");
-    });
-  }
-
-  // contoh: panggil fungsi ini di tombol Next layer 1
-  function nextLayer() {
-    document.getElementById('layer1').classList.add('hidden');
-    document.getElementById('layer2').classList.remove('hidden');
-    startMusic(); // Musik mulai pas klik Next
-  }
-</script>
-
-
-  <script src="script.js"></script>
-</body>
-</html>
