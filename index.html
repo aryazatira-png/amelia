@@ -18,18 +18,14 @@
     <button id="startBtn">GASKEUNN</button>
   </div>
 
-  <!-- Layer 1 Countdown -->
+  <!-- Layer 1 Umur -->
   <div id="layer1" class="layer">
     <video autoplay muted loop class="bg-video">
       <source src="asset/video2.mp4" type="video/mp4">
     </video>
     <div class="overlay"></div>
     <h2>Umur Acmelia Okta Ramadhani</h2>
-    <!-- Umur realtime -->
     <p id="umur"></p>
-    <h3>Menuju Ulang Tahun Berikutnya</h3>
-    <!-- Countdown ke ulang tahun -->
-    <p id="countdown"></p>
     <button onclick="prevLayer()">⬅ Back</button>
     <button onclick="nextLayer()">Next ➡</button>
   </div>
@@ -55,10 +51,10 @@
 
     <h2>ABOUT YOU</h2>
     <div class="gallery">
-      <img src="asset/foto1.jpg" alt="Foto 1" onclick="openLightbox(this, 'Caption foto pertama')">
-      <img src="asset/foto2.jpg" alt="Foto 2" onclick="openLightbox(this, 'Caption foto kedua')">
-      <img src="asset/foto3.jpg" alt="Foto 3" onclick="openLightbox(this, 'Caption foto ketiga')">
-      <img src="asset/foto4.jpg" alt="Foto 4" onclick="openLightbox(this, 'Caption foto keempat')">
+      <img src="asset/foto1.jpeg" alt="Foto 1" onclick="openLightbox(this, 'Always be yourself! Dont change your happiness just because of other people')">
+      <img src="asset/foto2.jpeg" alt="Foto 2" onclick="openLightbox(this, 'And last, web ini bakalan ABADI, ada penghitung real time di slide 2 dan akan bertambah terus sesuai umur amel!')">
+      <img src="asset/foto3.jpeg" alt="Foto 3" onclick="openLightbox(this, 'Semoga amel always dapetin semuanya, dapet pendidikan, dapet rezeki, dapet temen baik, dapet cowok baik, dapet kesehatan baik, dapet mood baik, dapet everything!')">
+      <img src="asset/foto4.jpeg" alt="Foto 4" onclick="openLightbox(this, 'Inget! Terus improve and terus evaluasi, because you have an extraordinary potential!')">
     </div>
     <button onclick="prevLayer()">⬅ Back</button>
   </div>
@@ -102,33 +98,10 @@
         `${tahun} tahun, ${bulan} bulan, ${hari} hari, ${jam} jam, ${menit} menit, ${detik} detik`;
     }
 
-    // ===== Countdown ke Ulang Tahun Berikutnya =====
-    function updateCountdown() {
-      const sekarang = new Date();
-      let nextBirthday = new Date(sekarang.getFullYear(), 9, 29, 0, 0, 0); // 29 Oktober
-
-      if (sekarang > nextBirthday) {
-        nextBirthday.setFullYear(sekarang.getFullYear() + 1);
-      }
-
-      const sisa = nextBirthday - sekarang;
-
-      const hari = Math.floor(sisa / (1000 * 60 * 60 * 24));
-      const jam = Math.floor((sisa % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const menit = Math.floor((sisa % (1000 * 60 * 60)) / (1000 * 60));
-      const detik = Math.floor((sisa % (1000 * 60)) / 1000);
-
-      document.getElementById("countdown").textContent =
-        `${hari} hari, ${jam} jam, ${menit} menit, ${detik} detik`;
-    }
-
     // Jalanin tiap detik
     setInterval(updateUmur, 1000);
-    setInterval(updateCountdown, 1000);
     updateUmur();
-    updateCountdown();
   </script>
-
   <script src="script.js"></script>
 </body>
 </html>
