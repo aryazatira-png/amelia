@@ -25,8 +25,9 @@
     </video>
     <div class="overlay"></div>
     <h2>Umur Acmelia Okta Ramadhani</h2>
-    <p id="countdown"></p>
     <p id="umur"></p>
+    <h3>Menuju Ulang Tahun Berikutnya</h3>
+    <p id="countdown"></p>
     <button onclick="prevLayer()">⬅ Back</button>
     <button onclick="nextLayer()">Next ➡</button>
   </div>
@@ -72,6 +73,59 @@
   <audio id="bg-music" src="asset/musik.mp3" loop></audio>
 
   <!-- JS -->
+  <script>
+    // ===== Hitung Umur Real-Time =====
+    function updateUmur() {
+      const lahir = new Date("2006-10-29T00:00:00"); // tanggal lahir Amel
+      const sekarang = new Date();
+
+      let tahun = sekarang.getFullYear() - lahir.getFullYear();
+      let bulan = sekarang.getMonth() - lahir.getMonth();
+      let hari = sekarang.getDate() - lahir.getDate();
+      let jam = sekarang.getHours() - lahir.getHours();
+      let menit = sekarang.getMinutes() - lahir.getMinutes();
+      let detik = sekarang.getSeconds() - lahir.getSeconds();
+
+      if (detik < 0) { detik += 60; menit--; }
+      if (menit < 0) { menit += 60; jam--; }
+      if (jam < 0) { jam += 24; hari--; }
+      if (hari < 0) {
+        const prevMonth = new Date(sekarang.getFullYear(), sekarang.getMonth(), 0);
+        hari += prevMonth.getDate();
+        bulan--;
+      }
+      if (bulan < 0) { bulan += 12; tahun--; }
+
+      document.getElementById("umur").textContent =
+        `${tahun} tahun, ${bulan} bulan, ${hari} hari, ${jam} jam, ${menit} menit, ${detik} detik`;
+    }
+
+    // ===== Countdown ke Ulang Tahun Berikutnya =====
+    function updateCountdown() {
+      const sekarang = new Date();
+      let nextBirthday = new Date(sekarang.getFullYear(), 9, 29, 0, 0, 0); // 29 Oktober
+
+      if (sekarang > nextBirthday) {
+        nextBirthday.setFullYear(sekarang.getFullYear() + 1);
+      }
+
+      const sisa = nextBirthday - sekarang;
+
+      const hari = Math.floor(sisa / (1000 * 60 * 60 * 24));
+      const jam = Math.floor((sisa % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const menit = Math.floor((sisa % (1000 * 60 * 60)) / (1000 * 60));
+      const detik = Math.floor((sisa % (1000 * 60)) / 1000);
+
+      document.getElementById("countdown").textContent =
+        `${hari} hari, ${jam} jam, ${menit} menit, ${detik} detik`;
+    }
+
+    // Jalanin tiap detik
+    setInterval(updateUmur, 1000);
+    setInterval(updateCountdown, 1000);
+    updateUmur();
+    updateCountdown();
+  </script>
   <script src="script.js"></script>
 </body>
 </html>
