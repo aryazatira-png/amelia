@@ -1,6 +1,7 @@
 let currentLayer = 0;
 let layers = [];
 let audio = null;
+let musicStarted = false; // ADDED: flag untuk track musik
 
 // ADDED: Wait for DOM to load before initializing
 document.addEventListener('DOMContentLoaded', function() {
@@ -30,8 +31,8 @@ document.addEventListener('DOMContentLoaded', function() {
   updateAge();
   setInterval(updateAge, 1000);
   
-  // Setup music autoplay
-  setupMusicAutoplay();
+  // CHROME FIX: Setup aggressive music autoplay
+  setupChromeAutoplay();
 });
 
 function startExperience() {
@@ -50,14 +51,15 @@ function startExperience() {
     layers[currentLayer].classList.remove('hidden');
   }
   
-  // Play music
-  if (audio) {
-    audio.play().catch(e => console.log('Music autoplay blocked:', e));
-  }
+  // CHROME FIX: Force play musik saat user click start
+  forceMusicPlay();
 }
 
 function nextLayer() {
   console.log('Next layer clicked, current:', currentLayer);
+  
+  // CHROME FIX: Coba play musik setiap user interaction
+  forceMusicPlay();
   
   // Hide current layer
   if (layers[currentLayer]) {
@@ -78,6 +80,9 @@ function nextLayer() {
 function prevLayer() {
   console.log('Previous layer clicked, current:', currentLayer);
   
+  // CHROME FIX: Coba play musik setiap user interaction
+  forceMusicPlay();
+  
   // Hide current layer
   if (layers[currentLayer]) {
     layers[currentLayer].classList.remove('active');
@@ -96,6 +101,9 @@ function prevLayer() {
 
 function openLightbox(img) {
   console.log('Opening lightbox');
+  
+  // CHROME FIX: Coba play musik setiap user interaction
+  forceMusicPlay();
   
   const lightbox = document.getElementById('lightbox');
   const lightboxImg = document.getElementById('lightbox-img');
@@ -151,20 +159,115 @@ function updateAge() {
     }
 }
 
-// ADDED: Music autoplay function
-function setupMusicAutoplay() {
+// CHROME AUTOPLAY FIXES
+function setupChromeAutoplay() {
+  if (!audio) {
+    console.log('Audio element not found');
+    return;
+  }
+  
+  console.log('Setting up Chrome autoplay workaround...');
+  
+  // Set audio properties for better autoplay compatibility
+  audio.volume = 0.7; // Set volume
+  audio.preload = 'auto'; // Preload audio
+  
+  // Multiple event listeners untuk trigger musik
+  const musicTriggers = ['click', 'touchstart', 'touchend', 'keydown', 'mousedown'];
+  
+  musicTriggers.forEach(event => {
+    document.addEventListener(event, forceMusicPlay, { once: false });
+  });
+  
+  // Coba autoplay langsung (mungkin berhasil di beberapa situasi)
+  tryAutoplay();
+}
+
+function tryAutoplay() {
+  if (!audio || musicStarted) return;
+  
+  console.log('Attempting autoplay...');
+  
+  // Reset audio to beginning
+  audio.currentTime = 0;
+  
+  const playPromise = audio.play();
+  
+  if (playPromise !== undefined) {
+    playPromise.then(() => {
+      console.log('✅ Autoplay SUCCESS!');
+      musicStarted = true;
+    }).catch(error => {
+      console.log('❌ Autoplay blocked:', error.message);
+      // Tidak berhasil, tunggu user interaction
+    });
+  }
+}
+
+function forceMusicPlay() {
   if (!audio) return;
   
-  const playMusic = () => {
-    audio.play().catch(() => {
-      console.log("Autoplay diblokir, tunggu interaksi user");
-    });
-    document.removeEventListener('click', playMusic);
-    document.removeEventListener('touchstart', playMusic);
-  };
+  if (!musicStarted) {
+    console.log('🎵 Force playing music...');
+    
+    // Reset ke awal jika belum mulai
+    audio.currentTime = 0;
+    audio.volume = 0.7;
+    
+    const playPromise = audio.play();
+    
+    if (playPromise !== undefined) {
+      playPromise.then(() => {
+        console.log('✅ Music started successfully!');
+        musicStarted = true;
+      }).catch(error => {
+        console.log('❌ Music play failed:', error.message);
+      });
+    }
+  } else {
+    // Musik sudah jalan, pastikan tidak di-pause
+    if (audio.paused) {
+      console.log('🎵 Resuming paused music...');
+      audio.play().catch(e => console.log('Resume failed:', e));
+    }
+  }
+}
 
-  audio.play().catch(() => {
-    document.addEventListener('click', playMusic);
-    document.addEventListener('touchstart', playMusic);
+// CHROME FIX: Coba play musik saat page visibility berubah
+document.addEventListener('visibilitychange', function() {
+  if (!document.hidden && audio && !audio.paused) {
+    // Page kembali visible, pastikan musik masih jalan
+    forceMusicPlay();
+  }
+});
+
+// CHROME FIX: Coba play musik saat window focus
+window.addEventListener('focus', function() {
+  forceMusicPlay();
+});
+
+// CHROME FIX: Handle audio events
+if (typeof audio !== 'undefined' && audio) {
+  audio.addEventListener('canplaythrough', function() {
+    console.log('Audio can play through');
+    if (!musicStarted) {
+      tryAutoplay();
+    }
+  });
+  
+  audio.addEventListener('loadeddata', function() {
+    console.log('Audio data loaded');
+    if (!musicStarted) {
+      tryAutoplay();
+    }
+  });
+  
+  audio.addEventListener('play', function() {
+    console.log('🎵 Audio started playing');
+    musicStarted = true;
+  });
+  
+  audio.addEventListener('pause', function() {
+    console.log('⏸️ Audio paused');
   });
 }
