@@ -7,14 +7,206 @@
   <link rel="stylesheet" href="style.css">
   <style>
     /* Basic CSS untuk demo */
-    body, html { margin: 0; padding: 0; font-family: sans-serif; overflow-x: hidden; }
-    .layer { display: none; position: relative; width: 100%; height: 100vh; text-align: center; color: white; }
-    .layer.active { display: block; }
-    .bg-video { position: absolute; top:0; left:0; width: 100%; height: 100%; object-fit: cover; z-index: -1; }
-    .overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 0; }
-    .gallery img { width: 150px; margin: 5px; cursor: pointer; }
-    .lightbox { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; flex-direction: column; color: white; }
-    .lightbox img { max-width: 80%; max-height: 80%; margin-bottom: 10px; }
+    body, html { 
+      margin: 0; 
+      padding: 0; 
+      font-family: 'Arial', sans-serif; 
+      overflow-x: hidden; 
+      background: #000;
+    }
+    
+    .layer { 
+      display: none; 
+      position: fixed; /* Changed from relative to fixed */
+      top: 0;
+      left: 0;
+      width: 100%; 
+      height: 100vh; 
+      text-align: center; 
+      color: white;
+      z-index: 10; /* Added z-index */
+    }
+    
+    .layer.active { 
+      display: flex; /* Changed to flex for better centering */
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .bg-video { 
+      position: absolute; 
+      top: 0; 
+      left: 0; 
+      width: 100%; 
+      height: 100%; 
+      object-fit: cover; 
+      z-index: -2; /* Moved further back */
+    }
+    
+    .overlay { 
+      position: absolute; 
+      top: 0; 
+      left: 0; 
+      width: 100%; 
+      height: 100%; 
+      background: rgba(0,0,0,0.5); 
+      z-index: -1; 
+    }
+    
+    /* Splash Screen Styling */
+    #splash {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .glow-text {
+      font-size: 2.5rem;
+      text-shadow: 0 0 20px rgba(255,255,255,0.5);
+      margin-bottom: 2rem;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+    
+    @keyframes glow {
+      from { text-shadow: 0 0 20px rgba(255,255,255,0.5); }
+      to { text-shadow: 0 0 30px rgba(255,255,255,0.8); }
+    }
+    
+    /* Button Styling */
+    button {
+      background: rgba(255, 255, 255, 0.2);
+      border: 2px solid white;
+      color: white;
+      padding: 15px 30px;
+      font-size: 1.1rem;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      margin: 10px;
+      z-index: 100; /* High z-index for buttons */
+      position: relative;
+    }
+    
+    button:hover {
+      background: white;
+      color: #667eea;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    /* Gallery Styling */
+    .gallery { 
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin: 20px;
+      z-index: 50;
+      position: relative;
+    }
+    
+    .gallery img { 
+      width: 150px; 
+      height: 150px;
+      object-fit: cover;
+      border-radius: 10px;
+      cursor: pointer; 
+      transition: transform 0.3s ease;
+      border: 3px solid white;
+    }
+    
+    .gallery img:hover {
+      transform: scale(1.1);
+    }
+    
+    /* Lightbox Styling */
+    .lightbox { 
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      width: 100%; 
+      height: 100%; 
+      background: rgba(0,0,0,0.9); 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      flex-direction: column; 
+      color: white;
+      z-index: 1000; /* Very high z-index */
+      cursor: pointer;
+    }
+    
+    .lightbox img { 
+      max-width: 80%; 
+      max-height: 80%; 
+      margin-bottom: 20px;
+      border-radius: 10px;
+    }
+    
+    .lightbox p {
+      font-size: 1.2rem;
+      margin-top: 10px;
+    }
+    
+    /* Layer specific styling */
+    #layer1 {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+    
+    #layer2 {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+    
+    #layer3 {
+      background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+      padding: 20px;
+    }
+    
+    /* Content styling */
+    h1, h2 {
+      margin-bottom: 2rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      z-index: 50;
+      position: relative;
+    }
+    
+    p {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+      z-index: 50;
+      position: relative;
+    }
+    
+    #countdown, #umur {
+      font-size: 2rem;
+      font-weight: bold;
+      margin: 20px 0;
+    }
+    
+    /* Navigation buttons container */
+    .nav-buttons {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 20px;
+      z-index: 200;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .glow-text { font-size: 1.8rem; }
+      button { padding: 12px 25px; font-size: 1rem; }
+      .gallery img { width: 120px; height: 120px; }
+      h1, h2 { font-size: 1.5rem; }
+      p { font-size: 1rem; }
+    }
   </style>
 </head>
 <body>
@@ -27,52 +219,259 @@
 
   <!-- Layer 1 Countdown -->
   <div id="layer1" class="layer">
-    <video autoplay muted loop class="bg-video">
+    <!-- Video background (akan fallback ke gradient jika video tidak ada) -->
+    <video autoplay muted loop class="bg-video" style="display: none;">
       <source src="assets/video1.mp4" type="video/mp4">
     </video>
     <div class="overlay"></div>
-    <h2>Umur Acmelia Okta Ramadhani</h2>
-    <p id="countdown"></p>
-    <p id="umur"></p>
-    <button onclick="prevLayer()">⬅ Back</button>
-    <button onclick="nextLayer()">Next ➡</button>
+    
+    <h2>Umur Amelia Okta Ramadhani</h2>
+    <p id="countdown">Loading...</p>
+    <p id="umur">🎂</p>
+    
+    <div class="nav-buttons">
+      <button onclick="prevLayer()">⬅ Back</button>
+      <button onclick="nextLayer()">Next ➡</button>
+    </div>
   </div>
 
   <!-- Layer 2 Teks -->
   <div id="layer2" class="layer">
-    <video autoplay muted loop class="bg-video">
+    <!-- Video background (akan fallback ke gradient jika video tidak ada) -->
+    <video autoplay muted loop class="bg-video" style="display: none;">
       <source src="assets/video2.mp4" type="video/mp4">
     </video>
     <div class="overlay"></div>
+    
     <h2 class="glow-text">Teks Cinematic Slide Kedua</h2>
-    <p>Amell happy birthday</p>
-    <button onclick="prevLayer()">⬅ Back</button>
-    <button onclick="nextLayer()">Next ➡</button>
+    <p style="font-size: 2rem; margin: 2rem 0;">🎉 Amell Happy Birthday! 🎉</p>
+    <p>Semoga tahun ini membawa kebahagiaan dan kesuksesan untukmu!</p>
+    
+    <div class="nav-buttons">
+      <button onclick="prevLayer()">⬅ Back</button>
+      <button onclick="nextLayer()">Next ➡</button>
+    </div>
   </div>
 
   <!-- Layer 3 Galeri Foto -->
   <div id="layer3" class="layer">
-    <h2>Galeri Kenangan</h2>
+    <h2>📸 Galeri Kenangan 📸</h2>
+    <p>Klik pada foto untuk melihat lebih besar</p>
+    
     <div class="gallery">
-      <img src="assets/foto1.jpg" alt="Foto 1" onclick="openLightbox(this)">
-      <img src="assets/foto2.jpg" alt="Foto 2" onclick="openLightbox(this)">
-      <img src="assets/foto3.jpg" alt="Foto 3" onclick="openLightbox(this)">
-      <img src="assets/foto4.jpg" alt="Foto 4" onclick="openLightbox(this)">
-      <img src="assets/foto5.jpg" alt="Foto 5" onclick="openLightbox(this)">
+      <!-- Placeholder images (ganti dengan foto asli) -->
+      <div style="width: 150px; height: 150px; background: #667eea; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: white; border: 3px solid white;" onclick="openLightbox(this, 'Foto 1')">
+        📷 Foto 1
+      </div>
+      <div style="width: 150px; height: 150px; background: #f093fb; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: white; border: 3px solid white;" onclick="openLightbox(this, 'Foto 2')">
+        📷 Foto 2
+      </div>
+      <div style="width: 150px; height: 150px; background: #4facfe; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: white; border: 3px solid white;" onclick="openLightbox(this, 'Foto 3')">
+        📷 Foto 3
+      </div>
+      <div style="width: 150px; height: 150px; background: #43e97b; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: white; border: 3px solid white;" onclick="openLightbox(this, 'Foto 4')">
+        📷 Foto 4
+      </div>
+      <div style="width: 150px; height: 150px; background: #f5576c; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: white; border: 3px solid white;" onclick="openLightbox(this, 'Foto 5')">
+        📷 Foto 5
+      </div>
     </div>
-    <button onclick="prevLayer()">⬅ Back</button>
+    
+    <div class="nav-buttons">
+      <button onclick="prevLayer()">⬅ Back</button>
+      <button onclick="restartExperience()">🔄 Restart</button>
+    </div>
   </div>
 
   <!-- Lightbox -->
   <div id="lightbox" class="lightbox" style="display:none;" onclick="closeLightbox()">
-    <img id="lightbox-img" src="">
+    <div id="lightbox-content" style="text-align: center;">
+      <h3>Preview Foto</h3>
+      <p>Ganti dengan foto asli Amelia</p>
+    </div>
     <p id="lightbox-caption"></p>
+    <p style="font-size: 0.9rem; opacity: 0.7;">Klik di mana saja untuk menutup</p>
   </div>
 
-  <!-- Musik -->
-  <audio id="bg-music" src="asset/musik.mp3" loop></audio>
+  <!-- Musik (akan diputar setelah user interaction) -->
+  <audio id="bg-music" loop>
+    <source src="assets/musik.mp3" type="audio/mp3">
+    <source src="assets/musik.ogg" type="audio/ogg">
+  </audio>
 
-  <!-- JS -->
-  <script src="script.js"></script>
+  <script>
+    // Variabel global
+    let currentLayer = 'splash';
+    const layers = ['splash', 'layer1', 'layer2', 'layer3'];
+    let layerIndex = 0;
+
+    // Inisialisasi saat DOM loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('Website loaded successfully!');
+      initializeWebsite();
+    });
+
+    function initializeWebsite() {
+      // Event listener untuk start button
+      const startBtn = document.getElementById('startBtn');
+      if (startBtn) {
+        startBtn.addEventListener('click', function() {
+          console.log('Start button clicked');
+          startExperience();
+        });
+      }
+
+      // Setup countdown jika ada
+      setupCountdown();
+      
+      // Test semua button
+      testButtons();
+    }
+
+    function startExperience() {
+      console.log('Starting experience...');
+      playMusic();
+      showLayer('layer1');
+    }
+
+    function showLayer(layerId) {
+      console.log('Showing layer:', layerId);
+      
+      // Sembunyikan semua layer
+      const allLayers = document.querySelectorAll('.layer');
+      allLayers.forEach(layer => {
+        layer.classList.remove('active');
+      });
+      
+      // Tampilkan layer yang diminta
+      const targetLayer = document.getElementById(layerId);
+      if (targetLayer) {
+        targetLayer.classList.add('active');
+        currentLayer = layerId;
+        layerIndex = layers.indexOf(layerId);
+        
+        // Load video jika ada
+        loadVideoForLayer(layerId);
+      } else {
+        console.error('Layer not found:', layerId);
+      }
+    }
+
+    function nextLayer() {
+      console.log('Next layer clicked');
+      if (layerIndex < layers.length - 1) {
+        layerIndex++;
+        showLayer(layers[layerIndex]);
+      }
+    }
+
+    function prevLayer() {
+      console.log('Previous layer clicked');
+      if (layerIndex > 0) {
+        layerIndex--;
+        showLayer(layers[layerIndex]);
+      }
+    }
+
+    function restartExperience() {
+      console.log('Restarting experience');
+      layerIndex = 0;
+      showLayer('splash');
+    }
+
+    function loadVideoForLayer(layerId) {
+      const video = document.querySelector(`#${layerId} .bg-video`);
+      if (video) {
+        video.style.display = 'block';
+        video.play().catch(e => {
+          console.log('Video autoplay failed:', e);
+          video.style.display = 'none';
+        });
+      }
+    }
+
+    function setupCountdown() {
+      // Contoh countdown ke ulang tahun berikutnya
+      const birthday = new Date();
+      birthday.setMonth(11); // December (0-indexed)
+      birthday.setDate(25); // Tanggal 25
+      
+      if (birthday < new Date()) {
+        birthday.setFullYear(birthday.getFullYear() + 1);
+      }
+      
+      setInterval(updateCountdown, 1000);
+      
+      function updateCountdown() {
+        const now = new Date();
+        const diff = birthday - now;
+        
+        if (diff > 0) {
+          const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+          
+          const countdownEl = document.getElementById('countdown');
+          if (countdownEl) {
+            countdownEl.innerHTML = `${days} hari, ${hours} jam, ${minutes} menit, ${seconds} detik`;
+          }
+        }
+      }
+      
+      // Set umur (ganti dengan umur yang sesuai)
+      const umurEl = document.getElementById('umur');
+      if (umurEl) {
+        umurEl.innerHTML = "🎂 Happy Birthday Amelia! 🎂";
+      }
+    }
+
+    function openLightbox(element, caption) {
+      console.log('Opening lightbox for:', caption);
+      const lightbox = document.getElementById('lightbox');
+      const captionEl = document.getElementById('lightbox-caption');
+      
+      if (lightbox && captionEl) {
+        captionEl.textContent = caption || 'Foto Kenangan';
+        lightbox.style.display = 'flex';
+      }
+    }
+
+    function closeLightbox() {
+      console.log('Closing lightbox');
+      const lightbox = document.getElementById('lightbox');
+      if (lightbox) {
+        lightbox.style.display = 'none';
+      }
+    }
+
+    function playMusic() {
+      const music = document.getElementById('bg-music');
+      if (music) {
+        music.play().catch(e => {
+          console.log('Music autoplay failed (normal behavior):', e);
+        });
+      }
+    }
+
+    function testButtons() {
+      console.log('Testing all buttons...');
+      const buttons = document.querySelectorAll('button');
+      buttons.forEach((btn, index) => {
+        console.log(`Button ${index + 1}:`, btn.textContent, btn.onclick);
+      });
+    }
+
+    // Global error handler
+    window.addEventListener('error', function(e) {
+      console.error('JavaScript Error:', e.error);
+    });
+
+    // Debug: Log semua klik
+    document.addEventListener('click', function(e) {
+      console.log('Clicked element:', e.target.tagName, e.target.textContent);
+    });
+  </script>
+
 </body>
 </html>
