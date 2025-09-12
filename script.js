@@ -185,7 +185,7 @@ window.addEventListener('focus', function() {
   - Upload file: asset/hujan.png
   - If you named it differently, replace RAIN_SRC below.
 */
-const RAIN_SRC = 'asset/hujan.jpeg';
+const RAIN_SRC = 'asset/hujan.png';
 let rainRunning = false;
 
 function startRain() {
