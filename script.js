@@ -1,6 +1,7 @@
 /* ---------------------------
   script.js (replace file lama)
-  Perbaikan safety + rain effect
+  Fix: Umur otomatis dari 11 Okt 2006 (tanpa countdown)
+  Termasuk: layer, lightbox, autoplay, rain effect
 --------------------------- */
 
 let currentLayer = 0;
@@ -34,11 +35,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }, {passive: false});
   }
 
-  // Init umur + countdown (safe)
+  // Init umur (update tiap detik)
   updateUmur();
-  updateCountdown();
   setInterval(updateUmur, 1000);
-  setInterval(updateCountdown, 1000);
 
   // setup autoplay helpers
   setupChromeAutoplay();
@@ -111,7 +110,7 @@ function closeLightbox() {
 
 // ===== Hitung Umur Real-Time =====
 function updateUmur() {
-  const lahir = new Date("2006-10-29T00:00:00"); // kalau mau ganti, ubah di sini
+  const lahir = new Date("2006-10-11T00:00:00"); // ⬅️ 11 Oktober 2006
   const sekarang = new Date();
 
   let tahun = sekarang.getFullYear() - lahir.getFullYear();
@@ -132,21 +131,6 @@ function updateUmur() {
   if (bulan < 0) { bulan += 12; tahun--; }
 
   safeSetText('umur', `${tahun} tahun, ${bulan} bulan, ${hari} hari, ${jam} jam, ${menit} menit, ${detik} detik`);
-}
-
-// ===== Countdown (safe) =====
-function updateCountdown() {
-  const sekarang = new Date();
-  let nextBirthday = new Date(sekarang.getFullYear(), 9, 29, 0, 0, 0); // 29 Okt
-  if (sekarang > nextBirthday) nextBirthday.setFullYear(sekarang.getFullYear() + 1);
-
-  const sisa = nextBirthday - sekarang;
-  const hari = Math.floor(sisa / (1000 * 60 * 60 * 24));
-  const jam = Math.floor((sisa % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const menit = Math.floor((sisa % (1000 * 60 * 60)) / (1000 * 60));
-  const detik = Math.floor((sisa % (1000 * 60)) / 1000);
-
-  safeSetText('countdown', `${hari} hari, ${jam} jam, ${menit} menit, ${detik} detik`);
 }
 
 // ========== CHROME AUTOPLAY FIXES ==========
@@ -229,22 +213,20 @@ function startRain() {
   for (let i = 0; i < jumlah; i++) {
     setTimeout(() => {
       const img = document.createElement('img');
-      img.src = RAIN_SRC; // ubah jika perlu
-      img.className = 'rain-img'; // cocokkan dgn CSS
+      img.src = RAIN_SRC;
+      img.className = 'rain-img';
       img.style.left = Math.random() * (window.innerWidth - 40) + 'px';
       img.style.animationDuration = (2 + Math.random() * 3) + 's';
       img.style.opacity = '0.95';
       img.style.width = '40px';
       container.appendChild(img);
 
-      // pastikan elemen hilang setelah animasi
       setTimeout(() => {
         if (img && img.parentNode) img.remove();
       }, maxLife - 1000);
     }, i * 180);
   }
 
-  // remove container and allow re-trigger setelah animasi selesai
   setTimeout(() => {
     if (container && container.parentNode) container.remove();
     rainRunning = false;
