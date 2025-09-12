@@ -5,6 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Amell Birthday Web</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* Efek hujan gambar */
+    .rain-img {
+      position: fixed;
+      top: -100px;
+      width: 50px;
+      height: auto;
+      animation: fall linear forwards;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(110vh);
+        opacity: 0;
+      }
+    }
+  </style>
 </head>
 <body>
 
@@ -72,7 +91,7 @@
     <button onclick="nextLayer()">Next ➡</button>
   </div>
 
-  <!-- Layer 5 Galeri Foto (copy dari Layer 3) -->
+  <!-- Layer 5 Galeri Foto -->
   <div id="layer5" class="layer">
     <video autoplay muted loop class="bg-video">
       <source src="asset/video5.mp4" type="video/mp4">
@@ -87,6 +106,21 @@
       <img src="asset/foto8.jpeg" alt="Foto 8" onclick="openLightbox(this, 'Emang untuk 2 puisi ini gua bikin sambil ngebayangin lu, tapi jangan salah paham dan mikir hal lain yaa')">
     </div>
     <button onclick="prevLayer()">⬅ Back</button>
+    <button onclick="nextLayer()">Next ➡</button>
+  </div>
+
+  <!-- Layer 6 Final Surprise -->
+  <div id="layer6" class="layer">
+    <video autoplay muted loop class="bg-video">
+      <source src="asset/video6.mp4" type="video/mp4">
+    </video>
+    <div class="overlay"></div>
+
+    <h2>FINAL SURPRISE</h2>
+    <p>Klik tombol di bawah buat liat efek hujan 🎉</p>
+
+    <button onclick="prevLayer()">⬅ Back</button>
+    <button onclick="startRain()">🌧 Start Rain</button>
   </div>
 
   <!-- Lightbox -->
@@ -127,10 +161,27 @@
       document.getElementById("umur").textContent =
         `${tahun} tahun, ${bulan} bulan, ${hari} hari, ${jam} jam, ${menit} menit, ${detik} detik`;
     }
-
-    // Jalanin tiap detik
     setInterval(updateUmur, 1000);
     updateUmur();
+
+    // ===== Efek Hujan Gambar =====
+    function startRain() {
+      const container = document.body;
+      for (let i = 0; i < 20; i++) {
+        setTimeout(() => {
+          let img = document.createElement("img");
+          img.src = "asset/hujan.png"; // ganti sesuai file PNG lu
+          img.classList.add("rain-img");
+
+          img.style.left = Math.random() * window.innerWidth + "px";
+          img.style.animationDuration = (2 + Math.random() * 3) + "s";
+
+          container.appendChild(img);
+
+          setTimeout(() => img.remove(), 5000);
+        }, i * 300);
+      }
+    }
   </script>
   <script src="script.js"></script>
 </body>
