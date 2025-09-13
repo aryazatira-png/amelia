@@ -1,5 +1,5 @@
 /* ---------------------------
-  script.js (FINAL VERSION)
+  script.js (FINAL FULL VERSION)
   Include: umur, layer, lightbox, autoplay, rain, random quotes
 --------------------------- */
 
@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function startExperience() {
   const splash = document.getElementById('splash');
   if (splash) splash.classList.add('hidden');
-  currentLayer = 1;
+  currentLayer = 0; // langsung dari layer 0
   showLayer(currentLayer);
   forceMusicPlay();
 }
@@ -208,7 +208,7 @@ function nextLayer() {
 
 function prevLayer() {
   forceMusicPlay();
-  currentLayer = Math.max(currentLayer - 1, 0);
+  currentLayer = Math.max(currentLayer - 0, 0); // fix biar layer 0 gak ilang
   showLayer(currentLayer);
 }
 
