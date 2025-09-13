@@ -1,6 +1,7 @@
 /* ---------------------------
   script.js (FINAL FULL VERSION)
   Include: umur, layer, lightbox, autoplay, rain, random quotes
+  Replace file lama dengan ini
 --------------------------- */
 
 let currentLayer = 0;
@@ -8,7 +9,7 @@ let layers = [];
 let audio = null;
 let musicStarted = false;
 
-// ====== QUOTES DATA ======
+// ====== QUOTES DATA (semua kata-kata lo) ======
 const quotes = [
   "MANEH NU BADMOOD kenapa sekitar yang lu diemin?",
   "Rek kitu wae?",
@@ -162,42 +163,63 @@ const quotes = [
   "Hajar ajaa, gak ada yang tau juga kan? Siapa tau menang"
 ];
 
-// Helper
+// Helper to safely set text
 function safeSetText(id, text) {
   const el = document.getElementById(id);
   if (el) el.textContent = text;
 }
 
-// Wait for DOM
+// Wait for DOM ready
 document.addEventListener('DOMContentLoaded', function() {
-  layers = document.querySelectorAll('.layer');
+  layers = Array.from(document.querySelectorAll('.layer'));
   audio = document.getElementById('bg-music');
 
+  // ensure initial classes consistent
+  // show initial splash (layer 0) if available
+  showLayer(0);
+
+  // start button
   const btn = document.getElementById('startBtn');
   if (btn) {
-    btn.addEventListener('click', e => { e.preventDefault(); startExperience(); });
-    btn.addEventListener('touchstart', e => { e.preventDefault(); startExperience(); }, { passive: false });
+    btn.addEventListener('click', function (e) { e.preventDefault(); startExperience(); });
+    btn.addEventListener('touchstart', function (e) { e.preventDefault(); startExperience(); }, { passive: false });
   }
 
+  // umur realtime (starts from 11 Oct 2006)
   updateUmur();
   setInterval(updateUmur, 1000);
 
+  // setup audio autoplay helpers
   setupChromeAutoplay();
 });
 
+// start experience: go to layer 1 (first content)
 function startExperience() {
   const splash = document.getElementById('splash');
-  if (splash) splash.classList.add('hidden');
-  currentLayer = 0; // langsung dari layer 0
+  // don't permanently hide splash; just switch to layer 1 so back works
+  currentLayer = Math.min(1, layers.length - 1);
   showLayer(currentLayer);
   forceMusicPlay();
 }
 
+// showLayer: robustly toggle active/hidden so no layer "disappears"
 function showLayer(index) {
+  // clamp
+  index = Math.max(0, Math.min(index, layers.length - 1));
+  currentLayer = index;
+
   layers.forEach((layer, i) => {
-    if (i === index) layer.classList.add('active');
-    else layer.classList.remove('active');
+    if (i === index) {
+      layer.classList.add('active');
+      layer.classList.remove('hidden');
+    } else {
+      layer.classList.remove('active');
+      layer.classList.add('hidden');
+    }
   });
+
+  // Optional: scroll to top to avoid transform issues on mobile
+  window.scrollTo(0, 0);
 }
 
 function nextLayer() {
@@ -208,30 +230,38 @@ function nextLayer() {
 
 function prevLayer() {
   forceMusicPlay();
-  currentLayer = Math.max(currentLayer - 0, 0); // fix biar layer 0 gak ilang
+  currentLayer = Math.max(currentLayer - 1, 0);
   showLayer(currentLayer);
 }
 
-// Lightbox
+// Lightbox with caption support
 function openLightbox(img, caption = "") {
   forceMusicPlay();
   const lightbox = document.getElementById('lightbox');
   const lightboxImg = document.getElementById('lightbox-img');
   const lightboxCaption = document.getElementById('lightbox-caption');
   if (!lightbox) return;
+
+  // show
   lightbox.style.display = 'flex';
+  lightbox.classList.remove('hidden');
+
   if (lightboxImg && img && img.src) lightboxImg.src = img.src;
-  if (lightboxCaption) lightboxCaption.textContent = caption || img.alt || "";
-}
-function closeLightbox() {
-  const lightbox = document.getElementById('lightbox');
-  if (lightbox) lightbox.style.display = 'none';
+  if (lightboxCaption) lightboxCaption.textContent = caption || (img && img.alt) || "";
 }
 
-// Umur
+function closeLightbox() {
+  const lightbox = document.getElementById('lightbox');
+  if (!lightbox) return;
+  lightbox.style.display = 'none';
+  lightbox.classList.add('hidden');
+}
+
+// ===== Hitung Umur Real-Time (start from 11 Oct 2006) =====
 function updateUmur() {
-  const lahir = new Date("2006-10-11T00:00:00");
+  const lahir = new Date("2006-10-11T00:00:00"); // tepat sesuai permintaan
   const sekarang = new Date();
+
   let tahun = sekarang.getFullYear() - lahir.getFullYear();
   let bulan = sekarang.getMonth() - lahir.getMonth();
   let hari = sekarang.getDate() - lahir.getDate();
@@ -244,72 +274,100 @@ function updateUmur() {
   if (jam < 0) { jam += 24; hari--; }
   if (hari < 0) {
     const prevMonth = new Date(sekarang.getFullYear(), sekarang.getMonth(), 0);
-    hari += prevMonth.getDate(); bulan--;
+    hari += prevMonth.getDate();
+    bulan--;
   }
   if (bulan < 0) { bulan += 12; tahun--; }
 
   safeSetText('umur', `${tahun} tahun, ${bulan} bulan, ${hari} hari, ${jam} jam, ${menit} menit, ${detik} detik`);
 }
 
-// Music Autoplay Fix
+// ========== AUDIO / AUTOPLAY helpers ==========
 function setupChromeAutoplay() {
   if (!audio) return;
+  audio.loop = true;
   audio.volume = 0.7;
   audio.preload = 'auto';
+
   const triggers = ['click', 'touchstart', 'touchend', 'keydown', 'mousedown'];
   triggers.forEach(ev => document.addEventListener(ev, forceMusicPlay, { once: false }));
+
+  // Try autoplay once
   tryAutoplay();
 }
+
 function tryAutoplay() {
   if (!audio || musicStarted) return;
-  const playPromise = audio.play();
-  if (playPromise !== undefined) {
-    playPromise.then(() => { musicStarted = true; }).catch(() => {});
+  const p = audio.play();
+  if (p && typeof p.then === 'function') {
+    p.then(() => { musicStarted = true; })
+     .catch(() => { /* blocked until interaction */ });
   }
 }
+
 function forceMusicPlay() {
   if (!audio) return;
   if (!musicStarted) {
-    audio.currentTime = 0; audio.volume = 0.7;
-    audio.play().then(() => { musicStarted = true; }).catch(() => {});
+    audio.currentTime = 0;
+    audio.volume = 0.7;
+    audio.play().then(() => {
+      musicStarted = true;
+    }).catch(() => { /* blocked, will retry via user triggers */ });
   } else {
     if (audio.paused) audio.play().catch(() => {});
   }
 }
+
 document.addEventListener('visibilitychange', () => { if (!document.hidden) forceMusicPlay(); });
 window.addEventListener('focus', forceMusicPlay);
 
-// Rain Effect
-const RAIN_SRC = 'asset/hujan.png';
+// ========= RAIN EFFECT =========
+const RAIN_SRC = 'asset/hujan.png'; // nama file png yang harus lo upload
 let rainRunning = false;
+
 function startRain() {
   if (rainRunning) return;
   rainRunning = true;
+
   const container = document.createElement('div');
-  container.style.position = 'fixed'; container.style.top = '0'; container.style.left = '0';
-  container.style.width = '100%'; container.style.height = '100%';
-  container.style.pointerEvents = 'none'; container.style.zIndex = '9999';
+  container.className = 'rain-container';
+  container.style.position = 'fixed';
+  container.style.top = '0';
+  container.style.left = '0';
+  container.style.width = '100%';
+  container.style.height = '100%';
+  container.style.pointerEvents = 'none';
+  container.style.zIndex = '9999';
   document.body.appendChild(container);
 
-  const jumlah = 20; const maxLife = 7000;
+  const jumlah = 20;
+  const maxLife = 7000;
+
   for (let i = 0; i < jumlah; i++) {
     setTimeout(() => {
       const img = document.createElement('img');
-      img.src = RAIN_SRC; img.className = 'rain-img';
+      img.src = RAIN_SRC;
+      img.className = 'rain-img';
       img.style.left = Math.random() * (window.innerWidth - 40) + 'px';
       img.style.animationDuration = (2 + Math.random() * 3) + 's';
-      img.style.opacity = '0.95'; img.style.width = '40px';
+      img.style.opacity = '0.95';
+      img.style.width = '40px';
       container.appendChild(img);
+
       setTimeout(() => { if (img && img.parentNode) img.remove(); }, maxLife - 1000);
-    }, i * 180);
+    }, i * 160);
   }
-  setTimeout(() => { if (container && container.parentNode) container.remove(); rainRunning = false; }, maxLife + jumlah * 200);
+
+  setTimeout(() => {
+    if (container && container.parentNode) container.remove();
+    rainRunning = false;
+  }, maxLife + jumlah * 200);
 }
 
-// ====== RANDOM QUOTE ======
+// ====== RANDOM QUOTE (shows on element with id="random-quote") ======
 function randomQuote() {
-  const target = document.getElementById('random-quote');
+  const target = document.getElementById('random-quote') || document.getElementById('random-text');
   if (!target) return;
-  const index = Math.floor(Math.random() * quotes.length);
-  target.textContent = quotes[index];
+  const idx = Math.floor(Math.random() * quotes.length);
+  target.textContent = quotes[idx];
 }
