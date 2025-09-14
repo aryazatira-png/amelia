@@ -176,7 +176,6 @@
       <source src="asset/video5.mp4" type="video/mp4">
     </video>
     <div class="overlay"></div>
-
     <h2>POEMS ABOUT YOU</h2>
     <div class="gallery">
       <img src="asset/foto5.jpeg" alt="Foto 5" onclick="openLightbox(this, 'nyoba nulis di binder')">
@@ -194,10 +193,8 @@
       <source src="asset/video6.mp4" type="video/mp4">
     </video>
     <div class="overlay"></div>
-
     <h2 class="glow-text">GIMANA RASANYA DIUCAPIN ULTAH KAYA GINI SAMA COWO SEPINTER DAN SEKEREN GWEH😎</h2>
     <p>btw backgroundny ucapan dari berbagai bahasa</p>
-
     <button onclick="prevLayer()">⬅ Back</button>
     <button onclick="startRain()">IDIOT</button>
     <button onclick="nextLayer()">Next ➡</button>
@@ -209,7 +206,6 @@
       <source src="asset/video7.mp4" type="video/mp4">
     </video>
     <div class="overlay"></div>
-
     <h2 class="glow-text">BACOTAN GK BERFAEDAH💫</h2>
     <p id="random-quote">Klik tombol di bawah buat kata-kata hari ini</p>
     <button onclick="prevLayer()">⬅ Back</button>
@@ -229,11 +225,34 @@
 
   <!-- JS -->
   <script>
+    let currentLayer = 0; 
+    const layers = document.querySelectorAll(".layer");
+
+    function showLayer(n) {
+      layers.forEach(l => l.classList.remove("active"));
+      layers[n].classList.add("active");
+      currentLayer = n;
+
+      // jalankan shuffle + listener memory game hanya di layer4
+      if (n === 4) initMemoryGame();
+    }
+
+    function nextLayer() {
+      if (currentLayer < layers.length - 1) showLayer(currentLayer + 1);
+    }
+    function prevLayer() {
+      if (currentLayer > 0) showLayer(currentLayer - 1);
+    }
+
+    document.getElementById("startBtn").addEventListener("click", () => {
+      showLayer(1);
+      document.getElementById("bg-music").play();
+    });
+
     // ===== Hitung Umur Real-Time =====
     function updateUmur() {
       const lahir = new Date("2006-10-11T00:00:00");
       const sekarang = new Date();
-
       let tahun = sekarang.getFullYear() - lahir.getFullYear();
       let bulan = sekarang.getMonth() - lahir.getMonth();
       let hari = sekarang.getDate() - lahir.getDate();
@@ -265,75 +284,74 @@
           let img = document.createElement("img");
           img.src = "asset/hujan.png"; 
           img.classList.add("rain-img");
-
           img.style.left = Math.random() * window.innerWidth + "px";
           img.style.animationDuration = (2 + Math.random() * 3) + "s";
-
           container.appendChild(img);
           setTimeout(() => img.remove(), 5000);
         }, i * 300);
       }
     }
 
-    // ===== Memory Game Logic =====
-    const cards = document.querySelectorAll(".memory-card");
-    let hasFlippedCard = false;
-    let lockBoard = false;
-    let firstCard, secondCard;
-    let matchedCount = 0;
+    // ===== Memory Game (hanya aktif di layer4) =====
+    function initMemoryGame() {
+      const cards = document.querySelectorAll(".memory-card");
+      let hasFlippedCard = false;
+      let lockBoard = false;
+      let firstCard, secondCard;
+      let matchedCount = 0;
 
-    function flipCard() {
-      if (lockBoard || this === firstCard) return;
-      this.classList.add("flip");
+      cards.forEach(card => card.addEventListener("click", flipCard));
+      shuffle();
 
-      if (!hasFlippedCard) {
-        hasFlippedCard = true;
-        firstCard = this;
-        return;
+      function flipCard() {
+        if (lockBoard || this === firstCard) return;
+        this.classList.add("flip");
+
+        if (!hasFlippedCard) {
+          hasFlippedCard = true;
+          firstCard = this;
+          return;
+        }
+        secondCard = this;
+        checkForMatch();
       }
 
-      secondCard = this;
-      checkForMatch();
-    }
-
-    function checkForMatch() {
-      let isMatch = firstCard.dataset.name === secondCard.dataset.name;
-      isMatch ? disableCards() : unflipCards();
-    }
-
-    function disableCards() {
-      firstCard.removeEventListener("click", flipCard);
-      secondCard.removeEventListener("click", flipCard);
-      resetBoard();
-      matchedCount++;
-      if (matchedCount === 4) {
-        document.getElementById("nextBtnLayer4").style.display = "inline-block";
+      function checkForMatch() {
+        let isMatch = firstCard.dataset.name === secondCard.dataset.name;
+        isMatch ? disableCards() : unflipCards();
       }
-    }
 
-    function unflipCards() {
-      lockBoard = true;
-      setTimeout(() => {
-        firstCard.classList.remove("flip");
-        secondCard.classList.remove("flip");
+      function disableCards() {
+        firstCard.removeEventListener("click", flipCard);
+        secondCard.removeEventListener("click", flipCard);
         resetBoard();
-      }, 1000);
+        matchedCount++;
+        if (matchedCount === 4) {
+          document.getElementById("nextBtnLayer4").style.display = "inline-block";
+        }
+      }
+
+      function unflipCards() {
+        lockBoard = true;
+        setTimeout(() => {
+          firstCard.classList.remove("flip");
+          secondCard.classList.remove("flip");
+          resetBoard();
+        }, 1000);
+      }
+
+      function resetBoard() {
+        [hasFlippedCard, lockBoard] = [false, false];
+        [firstCard, secondCard] = [null, null];
+      }
+
+      function shuffle() {
+        cards.forEach(card => {
+          let randomPos = Math.floor(Math.random() * 8);
+          card.style.order = randomPos;
+        });
+      }
     }
-
-    function resetBoard() {
-      [hasFlippedCard, lockBoard] = [false, false];
-      [firstCard, secondCard] = [null, null];
-    }
-
-    (function shuffle() {
-      cards.forEach(card => {
-        let randomPos = Math.floor(Math.random() * 8);
-        card.style.order = randomPos;
-      });
-    })();
-
-    cards.forEach(card => card.addEventListener("click", flipCard));
   </script>
-  <script src="script.js"></script>
 </body>
 </html>
