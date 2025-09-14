@@ -190,21 +190,23 @@ button:hover {
   transform: rotateY(180deg);
 }
 
-/* ===== FIX TOMBOL BACK DI LAYER 4 ===== */
+/* ===== MEMORY GAME (Layer 4) FIX POSISI ===== */
 #layer4 {
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  padding-bottom: 60px;
+  justify-content: center;
+  padding: 20px 0;
   overflow-y: auto;
 }
 
 #layer4 .memory-game {
-  margin-bottom: 30px;
+  margin: 20px 0;
 }
 
-#layer4 .back-btn {
+#layer4 .back-btn,
+#layer4 .next-btn {
   position: relative;
   z-index: 300;
-  margin-top: 15px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
