@@ -11,18 +11,17 @@ body {
   display: none;
   height: 100vh;
   width: 100%;
-  position: fixed; /* CHANGED: dari relative ke fixed */
+  position: fixed;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  z-index: 10; /* ADDED: z-index untuk layer */
+  z-index: 10;
 }
 
 .layer.active {
   display: flex;
 }
 
-/* ADDED: hidden class untuk layer transitions */
 .layer.hidden {
   display: none;
   pointer-events: none;
@@ -61,14 +60,12 @@ button {
   color: white;
   cursor: pointer;
   font-size: 1rem;
-  /* CRITICAL FIXES untuk button clickability */
   position: relative;
-  z-index: 100; /* pastikan button selalu di atas */
-  pointer-events: auto; /* pastikan button bisa diklik */
-  min-height: 40px; /* minimum height untuk touch */
+  z-index: 100;
+  pointer-events: auto;
+  min-height: 40px;
 }
 
-/* Hover effect */
 button:hover {
   background: #ff1493;
   transform: translateY(-1px);
@@ -126,7 +123,7 @@ button:hover {
   width: 100%; height: 100%;
   pointer-events: none;
   overflow: hidden;
-  z-index: 5; /* di atas video & overlay, tapi di bawah konten */
+  z-index: 5;
 }
 
 .raindrop {
@@ -194,33 +191,32 @@ button:hover {
   border-radius: 12px;
 }
 
-/* FIX z-index untuk splash biar tombol start kebaca */
+/* Splash fix */
 .layer#splash {
-  z-index: 200; /* pastikan paling atas pas awal */
+  z-index: 200;
 }
 
 #startBtn {
   position: relative;
-  z-index: 500; /* tombol paling atas */
-  pointer-events: auto; /* biar bisa di klik */
+  z-index: 500;
+  pointer-events: auto;
 }
 
 /* ===== FIX TOMBOL BACK DI LAYER 4 ===== */
 #layer4 {
-  display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start; /* isi dimulai dari atas */
-  padding-bottom: 60px; /* kasih ruang ekstra biar tombol gak ketiban */
-  overflow-y: auto; /* kalau konten panjang bisa discroll */
+  justify-content: flex-start;
+  padding-bottom: 60px;
+  overflow-y: auto;
 }
 
 #layer4 .memory-game {
-  margin-bottom: 30px; /* jarak sama tombol back */
+  margin-bottom: 30px;
 }
 
 #layer4 .back-btn {
   position: relative;
-  z-index: 300; /* pastikan nongol di atas elemen lain */
+  z-index: 300;
   margin-top: 15px;
 }
