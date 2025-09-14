@@ -1,6 +1,6 @@
 /* ---------------------------
   script.js (FINAL FULL VERSION)
-  Include: umur, layer, lightbox, autoplay, rain, random quotes
+  Include: umur, layer, lightbox, autoplay, rain, random quotes, memory game
   Replace file lama dengan ini
 --------------------------- */
 
@@ -9,7 +9,7 @@ let layers = [];
 let audio = null;
 let musicStarted = false;
 
-// ====== QUOTES DATA (semua kata-kata lo) ======
+// ====== QUOTES DATA ======
 const quotes = [
   "MANEH NU BADMOOD kenapa sekitar yang lu diemin?",
   "Rek kitu wae?",
@@ -174,37 +174,29 @@ document.addEventListener('DOMContentLoaded', function() {
   layers = Array.from(document.querySelectorAll('.layer'));
   audio = document.getElementById('bg-music');
 
-  // ensure initial classes consistent
-  // show initial splash (layer 0) if available
   showLayer(0);
 
-  // start button
   const btn = document.getElementById('startBtn');
   if (btn) {
     btn.addEventListener('click', function (e) { e.preventDefault(); startExperience(); });
     btn.addEventListener('touchstart', function (e) { e.preventDefault(); startExperience(); }, { passive: false });
   }
 
-  // umur realtime (starts from 11 Oct 2006)
   updateUmur();
   setInterval(updateUmur, 1000);
 
-  // setup audio autoplay helpers
   setupChromeAutoplay();
 });
 
-// start experience: go to layer 1 (first content)
+// start experience
 function startExperience() {
-  const splash = document.getElementById('splash');
-  // don't permanently hide splash; just switch to layer 1 so back works
   currentLayer = Math.min(1, layers.length - 1);
   showLayer(currentLayer);
   forceMusicPlay();
 }
 
-// showLayer: robustly toggle active/hidden so no layer "disappears"
+// show layer
 function showLayer(index) {
-  // clamp
   index = Math.max(0, Math.min(index, layers.length - 1));
   currentLayer = index;
 
@@ -218,8 +210,10 @@ function showLayer(index) {
     }
   });
 
-  // Optional: scroll to top to avoid transform issues on mobile
   window.scrollTo(0, 0);
+
+  // kalau masuk layer 4, mulai memory game
+  if (index === 4) initMemoryGame();
 }
 
 function nextLayer() {
@@ -234,7 +228,7 @@ function prevLayer() {
   showLayer(currentLayer);
 }
 
-// Lightbox with caption support
+// lightbox
 function openLightbox(img, caption = "") {
   forceMusicPlay();
   const lightbox = document.getElementById('lightbox');
@@ -242,7 +236,6 @@ function openLightbox(img, caption = "") {
   const lightboxCaption = document.getElementById('lightbox-caption');
   if (!lightbox) return;
 
-  // show
   lightbox.style.display = 'flex';
   lightbox.classList.remove('hidden');
 
@@ -257,9 +250,9 @@ function closeLightbox() {
   lightbox.classList.add('hidden');
 }
 
-// ===== Hitung Umur Real-Time (start from 11 Oct 2006) =====
+// umur
 function updateUmur() {
-  const lahir = new Date("2006-10-11T00:00:00"); // tepat sesuai permintaan
+  const lahir = new Date("2006-10-11T00:00:00");
   const sekarang = new Date();
 
   let tahun = sekarang.getFullYear() - lahir.getFullYear();
@@ -282,7 +275,7 @@ function updateUmur() {
   safeSetText('umur', `${tahun} tahun, ${bulan} bulan, ${hari} hari, ${jam} jam, ${menit} menit, ${detik} detik`);
 }
 
-// ========== AUDIO / AUTOPLAY helpers ==========
+// audio autoplay
 function setupChromeAutoplay() {
   if (!audio) return;
   audio.loop = true;
@@ -292,7 +285,6 @@ function setupChromeAutoplay() {
   const triggers = ['click', 'touchstart', 'touchend', 'keydown', 'mousedown'];
   triggers.forEach(ev => document.addEventListener(ev, forceMusicPlay, { once: false }));
 
-  // Try autoplay once
   tryAutoplay();
 }
 
@@ -301,7 +293,7 @@ function tryAutoplay() {
   const p = audio.play();
   if (p && typeof p.then === 'function') {
     p.then(() => { musicStarted = true; })
-     .catch(() => { /* blocked until interaction */ });
+     .catch(() => {});
   }
 }
 
@@ -310,9 +302,7 @@ function forceMusicPlay() {
   if (!musicStarted) {
     audio.currentTime = 0;
     audio.volume = 0.7;
-    audio.play().then(() => {
-      musicStarted = true;
-    }).catch(() => { /* blocked, will retry via user triggers */ });
+    audio.play().then(() => { musicStarted = true; }).catch(() => {});
   } else {
     if (audio.paused) audio.play().catch(() => {});
   }
@@ -321,13 +311,16 @@ function forceMusicPlay() {
 document.addEventListener('visibilitychange', () => { if (!document.hidden) forceMusicPlay(); });
 window.addEventListener('focus', forceMusicPlay);
 
-// ========= RAIN EFFECT =========
-const RAIN_SRC = 'asset/hujan.png'; // nama file png yang harus lo upload
+// rain effect
+const RAIN_SRC = 'asset/hujan.png';
 let rainRunning = false;
 
-function startRain() {
+function startRain(event) {
   if (rainRunning) return;
   rainRunning = true;
+
+  const btn = event?.target;
+  if (btn) btn.disabled = true;
 
   const container = document.createElement('div');
   container.className = 'rain-container';
@@ -362,12 +355,22 @@ function startRain() {
     if (container && container.parentNode) container.remove();
     rainRunning = false;
   }, maxLife + jumlah * 200);
+
+  setTimeout(() => { if (btn) btn.disabled = false; }, 2000);
 }
 
-// ====== RANDOM QUOTE (shows on element with id="random-quote") ======
+// random quote
 function randomQuote() {
   const target = document.getElementById('random-quote') || document.getElementById('random-text');
   if (!target) return;
   const idx = Math.floor(Math.random() * quotes.length);
   target.textContent = quotes[idx];
 }
+
+// ========== MEMORY GAME (Layer 4) ==========
+let memoryFlipped = [];
+let memoryLock = false;
+
+function initMemoryGame() {
+  const game = document.getElementById('memory-game');
+  if (!game
