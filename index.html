@@ -23,6 +23,52 @@
         opacity: 0;
       }
     }
+
+    /* Memory Game */
+    .memory-game {
+      width: 90%;
+      max-width: 600px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      perspective: 1000px;
+    }
+
+    .memory-card {
+      width: 100%;
+      aspect-ratio: 3/4;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.6s;
+      cursor: pointer;
+    }
+
+    .memory-card.flip {
+      transform: rotateY(180deg);
+    }
+
+    .front-face, .back-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 10px;
+      backface-visibility: hidden;
+      object-fit: cover;
+    }
+
+    .front-face {
+      transform: rotateY(180deg);
+    }
+
+    .back-face {
+      background: #ff69b4;
+    }
+
+    #nextBtnLayer4 {
+      display: none;
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
@@ -79,16 +125,49 @@
     <button onclick="nextLayer()">Next ➡</button>
   </div>
 
-  <!-- Layer 4 Kosong -->
+  <!-- Layer 4 Mini Game -->
   <div id="layer4" class="layer">
     <video autoplay muted loop class="bg-video">
       <source src="asset/video4.mp4" type="video/mp4">
     </video>
     <div class="overlay"></div>
-    <h2></h2>
-    <p></p>
+    <h2 class="glow-text">COBA NYOCOKIN KARTU DULU!</h2>
+    <div class="memory-game" id="memory-game">
+      <div class="memory-card" data-name="amel1">
+        <img class="front-face" src="asset/amel1.jpeg" alt="amel1">
+        <img class="back-face" src="asset/back.jpeg" alt="back">
+      </div>
+      <div class="memory-card" data-name="amel1">
+        <img class="front-face" src="asset/amel1.jpeg" alt="amel1">
+        <img class="back-face" src="asset/back.jpeg" alt="back">
+      </div>
+      <div class="memory-card" data-name="amel2">
+        <img class="front-face" src="asset/amel2.jpeg" alt="amel2">
+        <img class="back-face" src="asset/back.jpeg" alt="back">
+      </div>
+      <div class="memory-card" data-name="amel2">
+        <img class="front-face" src="asset/amel2.jpeg" alt="amel2">
+        <img class="back-face" src="asset/back.jpeg" alt="back">
+      </div>
+      <div class="memory-card" data-name="amel3">
+        <img class="front-face" src="asset/amel3.jpeg" alt="amel3">
+        <img class="back-face" src="asset/back.jpeg" alt="back">
+      </div>
+      <div class="memory-card" data-name="amel3">
+        <img class="front-face" src="asset/amel3.jpeg" alt="amel3">
+        <img class="back-face" src="asset/back.jpeg" alt="back">
+      </div>
+      <div class="memory-card" data-name="amel4">
+        <img class="front-face" src="asset/amel4.jpeg" alt="amel4">
+        <img class="back-face" src="asset/back.jpeg" alt="back">
+      </div>
+      <div class="memory-card" data-name="amel4">
+        <img class="front-face" src="asset/amel4.jpeg" alt="amel4">
+        <img class="back-face" src="asset/back.jpeg" alt="back">
+      </div>
+    </div>
     <button onclick="prevLayer()">⬅ Back</button>
-    <button onclick="nextLayer()">PRETT</button>
+    <button id="nextBtnLayer4" onclick="nextLayer()">PRETT</button>
   </div>
 
   <!-- Layer 5 Galeri Foto -->
@@ -152,7 +231,7 @@
   <script>
     // ===== Hitung Umur Real-Time =====
     function updateUmur() {
-      const lahir = new Date("2006-10-11T00:00:00"); // tanggal lahir Amel
+      const lahir = new Date("2006-10-11T00:00:00");
       const sekarang = new Date();
 
       let tahun = sekarang.getFullYear() - lahir.getFullYear();
@@ -184,18 +263,76 @@
       for (let i = 0; i < 20; i++) {
         setTimeout(() => {
           let img = document.createElement("img");
-          img.src = "asset/hujan.png"; // ganti sesuai file PNG lu
+          img.src = "asset/hujan.png"; 
           img.classList.add("rain-img");
 
           img.style.left = Math.random() * window.innerWidth + "px";
           img.style.animationDuration = (2 + Math.random() * 3) + "s";
 
           container.appendChild(img);
-
           setTimeout(() => img.remove(), 5000);
         }, i * 300);
       }
     }
+
+    // ===== Memory Game Logic =====
+    const cards = document.querySelectorAll(".memory-card");
+    let hasFlippedCard = false;
+    let lockBoard = false;
+    let firstCard, secondCard;
+    let matchedCount = 0;
+
+    function flipCard() {
+      if (lockBoard || this === firstCard) return;
+      this.classList.add("flip");
+
+      if (!hasFlippedCard) {
+        hasFlippedCard = true;
+        firstCard = this;
+        return;
+      }
+
+      secondCard = this;
+      checkForMatch();
+    }
+
+    function checkForMatch() {
+      let isMatch = firstCard.dataset.name === secondCard.dataset.name;
+      isMatch ? disableCards() : unflipCards();
+    }
+
+    function disableCards() {
+      firstCard.removeEventListener("click", flipCard);
+      secondCard.removeEventListener("click", flipCard);
+      resetBoard();
+      matchedCount++;
+      if (matchedCount === 4) {
+        document.getElementById("nextBtnLayer4").style.display = "inline-block";
+      }
+    }
+
+    function unflipCards() {
+      lockBoard = true;
+      setTimeout(() => {
+        firstCard.classList.remove("flip");
+        secondCard.classList.remove("flip");
+        resetBoard();
+      }, 1000);
+    }
+
+    function resetBoard() {
+      [hasFlippedCard, lockBoard] = [false, false];
+      [firstCard, secondCard] = [null, null];
+    }
+
+    (function shuffle() {
+      cards.forEach(card => {
+        let randomPos = Math.floor(Math.random() * 8);
+        card.style.order = randomPos;
+      });
+    })();
+
+    cards.forEach(card => card.addEventListener("click", flipCard));
   </script>
   <script src="script.js"></script>
 </body>
