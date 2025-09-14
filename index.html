@@ -16,7 +16,6 @@
       pointer-events: none;
       z-index: 9999;
     }
-
     @keyframes fall {
       to {
         transform: translateY(110vh);
@@ -34,7 +33,6 @@
       gap: 15px;
       perspective: 1000px;
     }
-
     .memory-card {
       width: 100%;
       aspect-ratio: 3/4;
@@ -43,11 +41,9 @@
       transition: transform 0.6s;
       cursor: pointer;
     }
-
     .memory-card.flip {
       transform: rotateY(180deg);
     }
-
     .front-face, .back-face {
       position: absolute;
       width: 100%;
@@ -55,19 +51,39 @@
       border-radius: 10px;
       backface-visibility: hidden;
       object-fit: cover;
+      top: 0;
+      left: 0;
     }
-
-    .front-face {
-      transform: rotateY(180deg);
-    }
-
-    .back-face {
-      background: #ff69b4;
-    }
+    .front-face { transform: rotateY(180deg); }
+    .back-face { transform: rotateY(0deg); background: #ff69b4; }
 
     #nextBtnLayer4 {
       display: none;
       margin-top: 20px;
+    }
+
+    /* Lightbox */
+    .lightbox {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+    }
+    .lightbox.hidden { display: none; }
+    .lightbox-content {
+      max-width: 90%;
+      text-align: center;
+    }
+    .lightbox-content img {
+      max-width: 100%;
+      border-radius: 10px;
+    }
+    .lightbox-content p {
+      color: #fff;
+      margin-top: 10px;
     }
   </style>
 </head>
@@ -95,7 +111,7 @@
     <button onclick="nextLayer()">Next ➡</button>
   </div>
 
-  <!-- Layer 2 Teks -->
+  <!-- Layer 2 -->
   <div id="layer2" class="layer">
     <video autoplay muted loop class="bg-video">
       <source src="asset/video1.mp4" type="video/mp4">
@@ -107,25 +123,24 @@
     <button onclick="nextLayer()">Next ➡</button>
   </div>
 
-  <!-- Layer 3 Galeri Foto -->
+  <!-- Layer 3 -->
   <div id="layer3" class="layer">
     <video autoplay muted loop class="bg-video">
       <source src="asset/video3.mp4" type="video/mp4">
     </video>
     <div class="overlay"></div>
-
     <h2>ABOUT YOU</h2>
     <div class="gallery">
       <img src="asset/foto1.jpeg" alt="Foto 1" onclick="openLightbox(this, 'Always be yourself! Dont change your happiness just because of other people')">
       <img src="asset/foto2.jpeg" alt="Foto 2" onclick="openLightbox(this, 'Web ini bakalan ABADI, ada penghitung real time di slide 2 dan akan bertambah terus sesuai umur amel!')">
-      <img src="asset/foto3.jpeg" alt="Foto 3" onclick="openLightbox(this, 'Semoga amel always dapetin semuanya, dapet pendidikan, dapet rezeki, dapet temen baik, dapet cowok baik, dapet kesehatan baik, dapet mood baik, dapet everything!')">
-      <img src="asset/foto4.jpeg" alt="Foto 4" onclick="openLightbox(this, 'Inget! Terus improve and terus evaluasi, because you have an extraordinary potential! HAPUS SIFAT AVOIDANT LU!')">
+      <img src="asset/foto3.jpeg" alt="Foto 3" onclick="openLightbox(this, 'Semoga amel always dapetin semuanya...')">
+      <img src="asset/foto4.jpeg" alt="Foto 4" onclick="openLightbox(this, 'Inget! Terus improve and terus evaluasi...')">
     </div>
     <button onclick="prevLayer()">⬅ Back</button>
     <button onclick="nextLayer()">Next ➡</button>
   </div>
 
-  <!-- Layer 4 Mini Game -->
+  <!-- Layer 4 -->
   <div id="layer4" class="layer">
     <video autoplay muted loop class="bg-video">
       <source src="asset/video4.mp4" type="video/mp4">
@@ -133,6 +148,7 @@
     <div class="overlay"></div>
     <h2 class="glow-text">COBA NYOCOKIN KARTU DULU!</h2>
     <div class="memory-game" id="memory-game">
+      <!-- Cards (same as punya lu) -->
       <div class="memory-card" data-name="amel1">
         <img class="front-face" src="asset/amel1.jpeg" alt="amel1">
         <img class="back-face" src="asset/back.jpeg" alt="back">
@@ -170,7 +186,7 @@
     <button id="nextBtnLayer4" onclick="nextLayer()">PRETT</button>
   </div>
 
-  <!-- Layer 5 Galeri Foto -->
+  <!-- Layer 5 -->
   <div id="layer5" class="layer">
     <video autoplay muted loop class="bg-video">
       <source src="asset/video5.mp4" type="video/mp4">
@@ -179,28 +195,28 @@
     <h2>POEMS ABOUT YOU</h2>
     <div class="gallery">
       <img src="asset/foto5.jpeg" alt="Foto 5" onclick="openLightbox(this, 'nyoba nulis di binder')">
-      <img src="asset/foto6.jpeg" alt="Foto 6" onclick="openLightbox(this, 'Gua gak pernah naksir, bogoh, ataupun mau sama lu, ini cuman pujian gua tentang lu')">
-      <img src="asset/foto7.jpeg" alt="Foto 7" onclick="openLightbox(this, 'Emang untuk 2 puisi ini gua bikin cuman halu tapi pas dibaca malah cocok buat amel, jangan salah paham!')">
-      <img src="asset/foto88.jpeg" alt="Foto 8" onclick="openLightbox(this, 'Ini sebelum gua ke bandung, keduanya bukan tentang lu tapi cuman halu, but tbh pas baca malah kebayang maneh,hehe maap gak maksud apapun')">
+      <img src="asset/foto6.jpeg" alt="Foto 6" onclick="openLightbox(this, 'Gua gak pernah naksir...')">
+      <img src="asset/foto7.jpeg" alt="Foto 7" onclick="openLightbox(this, 'Emang untuk 2 puisi ini...')">
+      <img src="asset/foto88.jpeg" alt="Foto 8" onclick="openLightbox(this, 'Ini sebelum gua ke bandung...')">
     </div>
     <button onclick="prevLayer()">⬅ Back</button>
     <button onclick="nextLayer()">Next ➡</button>
   </div>
 
-  <!-- Layer 6 Final Surprise -->
+  <!-- Layer 6 -->
   <div id="layer6" class="layer">
     <video autoplay muted loop class="bg-video">
       <source src="asset/video6.mp4" type="video/mp4">
     </video>
     <div class="overlay"></div>
-    <h2 class="glow-text">GIMANA RASANYA DIUCAPIN ULTAH KAYA GINI SAMA COWO SEPINTER DAN SEKEREN GWEH😎</h2>
+    <h2 class="glow-text">GIMANA RASANYA ...</h2>
     <p>btw backgroundny ucapan dari berbagai bahasa</p>
     <button onclick="prevLayer()">⬅ Back</button>
     <button onclick="startRain()">IDIOT</button>
     <button onclick="nextLayer()">Next ➡</button>
   </div>
 
-  <!-- Layer 7 Randomize Kata-kata -->
+  <!-- Layer 7 -->
   <div id="layer7" class="layer">
     <video autoplay muted loop class="bg-video">
       <source src="asset/video7.mp4" type="video/mp4">
@@ -213,43 +229,35 @@
   </div>
 
   <!-- Lightbox -->
-  <div id="lightbox" class="lightbox" style="display:none;" onclick="closeLightbox()">
+  <div id="lightbox" class="lightbox hidden" onclick="closeLightbox()">
     <div class="lightbox-content">
       <img id="lightbox-img" src="">
       <p id="lightbox-caption"></p>
     </div>
   </div>
 
-  <!-- Musik -->
   <audio id="bg-music" src="asset/musik.mp3" loop></audio>
 
   <!-- JS -->
   <script>
-    let currentLayer = 0; 
+    let currentLayer = 0;
     const layers = document.querySelectorAll(".layer");
 
     function showLayer(n) {
       layers.forEach(l => l.classList.remove("active"));
       layers[n].classList.add("active");
       currentLayer = n;
-
-      // jalankan shuffle + listener memory game hanya di layer4
       if (n === 4) initMemoryGame();
     }
-
-    function nextLayer() {
-      if (currentLayer < layers.length - 1) showLayer(currentLayer + 1);
-    }
-    function prevLayer() {
-      if (currentLayer > 0) showLayer(currentLayer - 1);
-    }
+    function nextLayer() { if (currentLayer < layers.length - 1) showLayer(currentLayer + 1); }
+    function prevLayer() { if (currentLayer > 0) showLayer(currentLayer - 1); }
 
     document.getElementById("startBtn").addEventListener("click", () => {
       showLayer(1);
       document.getElementById("bg-music").play();
     });
 
-    // ===== Hitung Umur Real-Time =====
+    // Hitung Umur
     function updateUmur() {
       const lahir = new Date("2006-10-11T00:00:00");
       const sekarang = new Date();
@@ -259,30 +267,22 @@
       let jam = sekarang.getHours() - lahir.getHours();
       let menit = sekarang.getMinutes() - lahir.getMinutes();
       let detik = sekarang.getSeconds() - lahir.getSeconds();
-
       if (detik < 0) { detik += 60; menit--; }
       if (menit < 0) { menit += 60; jam--; }
       if (jam < 0) { jam += 24; hari--; }
-      if (hari < 0) {
-        const prevMonth = new Date(sekarang.getFullYear(), sekarang.getMonth(), 0);
-        hari += prevMonth.getDate();
-        bulan--;
-      }
+      if (hari < 0) { const prevMonth = new Date(sekarang.getFullYear(), sekarang.getMonth(), 0); hari += prevMonth.getDate(); bulan--; }
       if (bulan < 0) { bulan += 12; tahun--; }
-
-      document.getElementById("umur").textContent =
-        `${tahun} tahun, ${bulan} bulan, ${hari} hari, ${jam} jam, ${menit} menit, ${detik} detik`;
+      document.getElementById("umur").textContent = `${tahun} tahun, ${bulan} bulan, ${hari} hari, ${jam} jam, ${menit} menit, ${detik} detik`;
     }
-    setInterval(updateUmur, 1000);
-    updateUmur();
+    setInterval(updateUmur, 1000); updateUmur();
 
-    // ===== Efek Hujan Gambar =====
+    // Efek Hujan
     function startRain() {
       const container = document.body;
       for (let i = 0; i < 20; i++) {
         setTimeout(() => {
           let img = document.createElement("img");
-          img.src = "asset/hujan.png"; 
+          img.src = "asset/hujan.png";
           img.classList.add("rain-img");
           img.style.left = Math.random() * window.innerWidth + "px";
           img.style.animationDuration = (2 + Math.random() * 3) + "s";
@@ -292,65 +292,54 @@
       }
     }
 
-    // ===== Memory Game (hanya aktif di layer4) =====
+    // Lightbox
+    function openLightbox(img, caption) {
+      document.getElementById("lightbox").classList.remove("hidden");
+      document.getElementById("lightbox-img").src = img.src;
+      document.getElementById("lightbox-caption").textContent = caption;
+    }
+    function closeLightbox() { document.getElementById("lightbox").classList.add("hidden"); }
+
+    // Quotes
+    const quotes = [
+      "Jangan berhenti jadi diri sendiri ✨",
+      "Hari buruk itu biasa, tapi lu tetep luar biasa 💫",
+      "Semua hal besar dimulai dari langkah kecil 🚀",
+      "Orang kuat bukan berarti gak nangis, tapi yang tetep maju 🌹"
+    ];
+    function randomQuote() {
+      const q = quotes[Math.floor(Math.random() * quotes.length)];
+      document.getElementById("random-quote").textContent = q;
+    }
+
+    // Memory Game
     function initMemoryGame() {
       const cards = document.querySelectorAll(".memory-card");
-      let hasFlippedCard = false;
-      let lockBoard = false;
-      let firstCard, secondCard;
-      let matchedCount = 0;
-
+      let hasFlippedCard = false, lockBoard = false, firstCard, secondCard, matchedCount = 0;
       cards.forEach(card => card.addEventListener("click", flipCard));
       shuffle();
-
       function flipCard() {
         if (lockBoard || this === firstCard) return;
         this.classList.add("flip");
-
-        if (!hasFlippedCard) {
-          hasFlippedCard = true;
-          firstCard = this;
-          return;
-        }
-        secondCard = this;
-        checkForMatch();
+        if (!hasFlippedCard) { hasFlippedCard = true; firstCard = this; return; }
+        secondCard = this; checkForMatch();
       }
-
       function checkForMatch() {
         let isMatch = firstCard.dataset.name === secondCard.dataset.name;
         isMatch ? disableCards() : unflipCards();
       }
-
       function disableCards() {
         firstCard.removeEventListener("click", flipCard);
         secondCard.removeEventListener("click", flipCard);
-        resetBoard();
-        matchedCount++;
-        if (matchedCount === 4) {
-          document.getElementById("nextBtnLayer4").style.display = "inline-block";
-        }
+        resetBoard(); matchedCount++;
+        if (matchedCount === 4) document.getElementById("nextBtnLayer4").style.display = "inline-block";
       }
-
       function unflipCards() {
         lockBoard = true;
-        setTimeout(() => {
-          firstCard.classList.remove("flip");
-          secondCard.classList.remove("flip");
-          resetBoard();
-        }, 1000);
+        setTimeout(() => { firstCard.classList.remove("flip"); secondCard.classList.remove("flip"); resetBoard(); }, 1000);
       }
-
-      function resetBoard() {
-        [hasFlippedCard, lockBoard] = [false, false];
-        [firstCard, secondCard] = [null, null];
-      }
-
-      function shuffle() {
-        cards.forEach(card => {
-          let randomPos = Math.floor(Math.random() * 8);
-          card.style.order = randomPos;
-        });
-      }
+      function resetBoard() { [hasFlippedCard, lockBoard] = [false, false]; [firstCard, secondCard] = [null, null]; }
+      function shuffle() { cards.forEach(card => { card.style.order = Math.floor(Math.random() * 8); }); }
     }
   </script>
 </body>
