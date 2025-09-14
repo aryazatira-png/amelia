@@ -193,3 +193,14 @@ button:hover {
   color: white;
   border-radius: 12px;
 }
+
+/* FIX z-index untuk splash biar tombol start kebaca */
+.layer#splash {
+  z-index: 200; /* pastikan paling atas pas awal */
+}
+
+#startBtn {
+  position: relative;
+  z-index: 500; /* tombol paling atas */
+  pointer-events: auto; /* biar bisa di klik */
+}
