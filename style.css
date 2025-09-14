@@ -153,15 +153,13 @@ button:hover {
 .memory-card {
   width: 80px;
   height: 100px;
-  perspective: 1000px;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.5s;
   cursor: pointer;
 }
 
-.memory-card.flip .front-face {
-  transform: rotateY(0deg);
-}
-
-.memory-card.flip .back-face {
+.memory-card.flip {
   transform: rotateY(180deg);
 }
 
@@ -171,15 +169,11 @@ button:hover {
   border-radius: 12px;
   object-fit: cover;
   backface-visibility: hidden;
-  transition: transform 0.5s;
   position: absolute;
   top: 0; left: 0;
 }
 
-.memory-card .front-face {
-  transform: rotateY(180deg);
-}
-
+/* Awalnya yang keliatan belakang */
 .memory-card .back-face {
   transform: rotateY(0deg);
   background: #ff69b4;
@@ -191,15 +185,9 @@ button:hover {
   border-radius: 12px;
 }
 
-/* Splash fix */
-.layer#splash {
-  z-index: 200;
-}
-
-#startBtn {
-  position: relative;
-  z-index: 500;
-  pointer-events: auto;
+/* Muncul setelah di-flip */
+.memory-card .front-face {
+  transform: rotateY(180deg);
 }
 
 /* ===== FIX TOMBOL BACK DI LAYER 4 ===== */
