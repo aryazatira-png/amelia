@@ -17,6 +17,8 @@ const quotes = [
   "Cantikmu bukan cuma di luar, tapi juga dari cara kamu mikir",
   "Jangan lupa, kamu tuh punya nilai yang nggak bisa digantiin sama siapa pun.",
   "Kamu itu berharga, bahkan di hari-hari ketika kamu ngerasa biasa aja.",
+"mama teacher papah engineer OR mama teacher papah lawyer? 🤪", 
+"fakultas boleh red flag tapi sifatku mah green flag",
   "Jangan pernah berhenti percaya sama diri kamu sendiri, karena banyak orang percaya sama kamu.",
   "Kamu cantik dengan caramu sendiri, nggak perlu ngebandingin diri sama siapa pun.",
   "Kamu punya aura yang bikin orang lain betah ada di deketmu.",
