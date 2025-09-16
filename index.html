@@ -23,6 +23,8 @@
       text-align: center;
       padding: 20px;
       box-sizing: border-box;
+      transition: opacity 0.5s ease-out;
+      opacity: 1;
     }
     .login-container {
       background-color: #ff69b4; /* Pink */
@@ -64,13 +66,9 @@
     .login-container button:hover {
       background-color: #eee;
     }
-    .login-container p {
-      color: #fff;
-      font-size: 14px;
-      margin-top: 20px;
-    }
     .hidden {
       display: none !important;
+      opacity: 0;
     }
 
     /* Efek hujan gambar */
@@ -162,7 +160,6 @@
       <input type="text" id="username" placeholder="masukkan nama...">
       <input type="password" id="password" placeholder="masukkan password...">
       <button id="loginBtn">MASUK</button>
-      <p>Gunakan: nama = amelia okta ramadani (lowercase), pass - 111026</p>
     </div>
   </div>
 
@@ -317,7 +314,10 @@
 
       if (usernameInput === "amelia okta ramadani" && passwordInput === "111026") {
         loginLayer.classList.add("hidden");
-        showLayer(0); // Show splash screen after successful login
+        // Wait a moment for the transition to complete, then show the splash layer
+        setTimeout(() => {
+          showLayer(1);
+        }, 100);
       } else {
         alert("Username atau password salah!");
       }
@@ -329,19 +329,23 @@
       currentLayer = n;
       if (n === 4) initMemoryGame();
     }
+    
+    // Initial call to show login layer
+    showLayer(0);
+
     function nextLayer() {
-      // Check if it's the splash screen (index 0)
-      if (currentLayer === 0) {
-        showLayer(1);
-        document.getElementById("bg-music").play();
-      } else if (currentLayer < layers.length - 1) {
+      if (currentLayer < layers.length - 1) {
         showLayer(currentLayer + 1);
       }
     }
-    function prevLayer() { if (currentLayer > 0) showLayer(currentLayer - 1); }
+    function prevLayer() {
+      if (currentLayer > 0) {
+        showLayer(currentLayer - 1);
+      }
+    }
 
     document.getElementById("startBtn").addEventListener("click", () => {
-      showLayer(1);
+      showLayer(2);
       document.getElementById("bg-music").play();
     });
 
