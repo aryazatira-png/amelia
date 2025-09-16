@@ -6,7 +6,7 @@
   <title>Amell Birthday Web</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* ===== login layer ===== */
+    /* ===== login layer style (simple & responsive, tweak bebas) ===== */
     .login-layer {
       display: flex;
       flex-direction: column;
@@ -17,9 +17,6 @@
       width: 100%;
       background: black;
       color: white;
-      position: fixed;
-      top:0; left:0;
-      z-index: 9999;
     }
     .login-title {
       font-size: 5vw;
@@ -58,7 +55,7 @@
     }
     .login-actions {
       display:flex;
-      justify-content: flex-end;
+      justify-content: space-between;
       gap: 12px;
       align-items: center;
     }
@@ -77,16 +74,19 @@
       padding: 6px 10px;
       border-radius: 8px;
       display:none;
-      margin-bottom: 10px;
     }
+
+    /* minimal: keep original styles for other layers (user's CSS usually in style.css) */
+    /* ...rain + memory styles will use external CSS; keep conflicts minimal... */
+    /* small helper so login sits above splash in z-order if necessary */
+    #login { z-index: 9999; position: fixed; top:0; left:0; }
   </style>
 </head>
 <body>
 
-  <!-- NEW: Login Layer -->
   <div id="login" class="layer active login-layer">
     <div class="login-title">LOGIN</div>
-    <div class="login-box">
+    <div class="login-box" role="form" aria-label="Login form">
       <div class="login-row">
         <label for="login-name">Nama</label>
         <input id="login-name" type="text" placeholder="masukkan nama..." autocomplete="name" />
@@ -95,14 +95,16 @@
         <label for="login-pass">Password</label>
         <input id="login-pass" type="password" placeholder="masukkan password..." autocomplete="current-password" />
       </div>
-      <div class="login-error" id="login-error">Nama atau password salah.</div>
-      <div class="login-actions">
-        <button id="login-btn">MASUK</button>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div class="login-error" id="login-error">Nama atau password salah.</div>
+        <div class="login-actions">
+          <button id="login-btn">MASUK</button>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Splash Screen -->
   <div id="splash" class="layer">
     <video autoplay muted loop class="bg-video">
       <source src="asset/splash.mp4" type="video/mp4">
@@ -112,7 +114,6 @@
     <button id="startBtn">GASKEUNN</button>
   </div>
 
-  <!-- Layer 1 Umur -->
   <div id="layer1" class="layer">
     <video autoplay muted loop class="bg-video">
       <source src="asset/video2.mp4" type="video/mp4">
@@ -124,7 +125,6 @@
     <button onclick="nextLayer()">Next ➡</button>
   </div>
 
-  <!-- Layer 2 Teks -->
   <div id="layer2" class="layer">
     <video autoplay muted loop class="bg-video">
       <source src="asset/video1.mp4" type="video/mp4">
@@ -136,7 +136,6 @@
     <button onclick="nextLayer()">Next ➡</button>
   </div>
 
-  <!-- Layer 3 Galeri Foto -->
   <div id="layer3" class="layer">
     <video autoplay muted loop class="bg-video">
       <source src="asset/video3.mp4" type="video/mp4">
@@ -153,7 +152,6 @@
     <button onclick="nextLayer()">Next ➡</button>
   </div>
 
-  <!-- Layer 4 Mini Game -->
   <div id="layer4" class="layer">
     <video autoplay muted loop class="bg-video">
       <source src="asset/video4.mp4" type="video/mp4">
@@ -200,7 +198,6 @@
     </div>
   </div>
 
-  <!-- Layer 5 Galeri Foto -->
   <div id="layer5" class="layer">
     <video autoplay muted loop class="bg-video">
       <source src="asset/video5.mp4" type="video/mp4">
@@ -217,7 +214,6 @@
     <button onclick="nextLayer()">Next ➡</button>
   </div>
 
-  <!-- Layer 6 Final Surprise -->
   <div id="layer6" class="layer">
     <video autoplay muted loop class="bg-video">
       <source src="asset/video6.mp4" type="video/mp4">
@@ -230,7 +226,6 @@
     <button onclick="nextLayer()">Next ➡</button>
   </div>
 
-  <!-- Layer 7 Random Kata -->
   <div id="layer7" class="layer">
     <video autoplay muted loop class="bg-video">
       <source src="asset/video7.mp4" type="video/mp4">
@@ -242,7 +237,6 @@
     <button onclick="randomQuote()">🎲 NYOCOT</button>
   </div>
 
-  <!-- Lightbox -->
   <div id="lightbox" class="lightbox" style="display:none;" onclick="closeLightbox()">
     <div class="lightbox-content">
       <img id="lightbox-img" src="">
@@ -250,99 +244,208 @@
     </div>
   </div>
 
-  <!-- Musik -->
   <audio id="bg-music" src="asset/musik.mp3" loop></audio>
 
-  <!-- ==== SCRIPT ==== -->
   <script>
+    // --- basic layer system (login is index 0, splash index 1, etc.) ---
     let currentLayer = 0;
     const layers = Array.from(document.querySelectorAll('.layer'));
 
     function showLayer(idx) {
       idx = Math.max(0, Math.min(idx, layers.length - 1));
-      layers.forEach((l, i) => l.classList.toggle('active', i === idx));
+      layers.forEach((l, i) => {
+        if (i === idx) {
+          l.classList.add('active');
+        } else {
+          l.classList.remove('active');
+        }
+      });
       currentLayer = idx;
-    }
-    function nextLayer() { showLayer(currentLayer + 1); }
-    function prevLayer() { showLayer(currentLayer - 1); }
-
-    // Login
-    const LOGIN_NAME = 'amelia okta ramadani';
-    const LOGIN_PASS = '111026';
-    document.getElementById('login-btn').addEventListener('click', tryLogin);
-    function tryLogin() {
-      const nameVal = document.getElementById('login-name').value.trim().toLowerCase();
-      const passVal = document.getElementById('login-pass').value.trim();
-      if (nameVal === LOGIN_NAME && passVal === LOGIN_PASS) {
-        document.getElementById('login-error').style.display = 'none';
-        showLayer(1);
-      } else {
-        document.getElementById('login-error').style.display = 'block';
+      // start memory game when reach layer4 (index 4)
+      if (idx === 4) {
+        // run initialization if not already
+        if (typeof initMemoryGame === 'function') initMemoryGame();
       }
     }
 
-    // Start button
-    document.getElementById('startBtn').addEventListener('click', () => {
-      showLayer(2);
-      document.getElementById('bg-music').play().catch(()=>{});
+    function nextLayer() {
+      showLayer(Math.min(currentLayer + 1, layers.length - 1));
+    }
+    function prevLayer() {
+      showLayer(Math.max(currentLayer - 1, 0));
+    }
+
+    // login logic
+    const LOGIN_NAME = 'amelia okta ramadani';
+    const LOGIN_PASS = '111026';
+    const loginBtn = document.getElementById('login-btn');
+    const loginName = document.getElementById('login-name');
+    const loginPass = document.getElementById('login-pass');
+    const loginError = document.getElementById('login-error');
+
+    function tryLogin() {
+      const nameVal = (loginName.value || '').trim().toLowerCase();
+      const passVal = (loginPass.value || '').trim();
+      if (nameVal === LOGIN_NAME && passVal === LOGIN_PASS) {
+        // Correct login
+        loginError.style.display = 'none';
+        showLayer(1);
+      } else {
+        // Incorrect login
+        loginError.style.display = 'block';
+        document.querySelector('.login-box').animate(
+          [{ transform: 'translateX(-6px)' }, { transform: 'translateX(6px)' }, { transform: 'translateX(0)' }],
+          { duration: 300, iterations: 1 }
+        );
+      }
+    }
+
+    loginBtn.addEventListener('click', tryLogin);
+    [loginName, loginPass].forEach(el => el.addEventListener('keydown', function(e){
+      if (e.key === 'Enter') tryLogin();
+    }));
+
+    // start splash start button (still present)
+    const startBtn = document.getElementById('startBtn');
+    if (startBtn) startBtn.addEventListener('click', () => {
+      showLayer(2); 
+      const audio = document.getElementById('bg-music');
+      if (audio) audio.play().catch(()=>{});
     });
 
-    // Hitung Umur
+    // ===== Hitung Umur Real-Time =====
     function updateUmur() {
       const lahir = new Date("2006-10-11T00:00:00");
       const sekarang = new Date();
+
       let tahun = sekarang.getFullYear() - lahir.getFullYear();
       let bulan = sekarang.getMonth() - lahir.getMonth();
       let hari = sekarang.getDate() - lahir.getDate();
       let jam = sekarang.getHours() - lahir.getHours();
       let menit = sekarang.getMinutes() - lahir.getMinutes();
       let detik = sekarang.getSeconds() - lahir.getSeconds();
+
       if (detik < 0) { detik += 60; menit--; }
       if (menit < 0) { menit += 60; jam--; }
       if (jam < 0) { jam += 24; hari--; }
-      if (hari < 0) { hari += 30; bulan--; }
+      if (hari < 0) {
+        const prevMonth = new Date(sekarang.getFullYear(), sekarang.getMonth(), 0);
+        hari += prevMonth.getDate(); bulan--;
+      }
       if (bulan < 0) { bulan += 12; tahun--; }
-      document.getElementById('umur').textContent = `${tahun} tahun, ${bulan} bulan, ${hari} hari, ${jam} jam, ${menit} menit, ${detik} detik`;
+
+      const el = document.getElementById('umur');
+      if (el) el.textContent = `${tahun} tahun, ${bulan} bulan, ${hari} hari, ${jam} jam, ${menit} menit, ${detik} detik`;
     }
     setInterval(updateUmur, 1000);
+    updateUmur();
 
-    // Rain effect
+    // ===== Efek Hujan Gambar =====
     function startRain() {
+      const container = document.body;
       for (let i = 0; i < 20; i++) {
         setTimeout(() => {
           let img = document.createElement('img');
           img.src = "asset/hujan.png";
           img.classList.add("rain-img");
           img.style.left = Math.random() * window.innerWidth + "px";
-          img.style.animationDuration = (Math.random()*2+2) + "s";
-          document.body.appendChild(img);
-          setTimeout(() => img.remove(), 4000);
-        }, i * 200);
+          img.style.animationDuration = (2 + Math.random() * 3) + "s";
+          container.appendChild(img);
+          setTimeout(() => img.remove(), 5000);
+        }, i * 300);
       }
     }
 
-    // Random Quotes
-    const quotes = [
-      "Semoga hari ini lebih indah dari kemarin!",
-      "Jangan lupa makan!",
-      "Gausah banyak overthinking.",
-      "Percaya sama diri sendiri.",
-      "Be happy!"
-    ];
-    function randomQuote() {
-      const q = quotes[Math.floor(Math.random()*quotes.length)];
-      document.getElementById('random-quote').textContent = q;
-    }
-
-    // Lightbox
-    function openLightbox(img, caption) {
-      document.getElementById('lightbox-img').src = img.src;
-      document.getElementById('lightbox-caption').textContent = caption;
-      document.getElementById('lightbox').style.display = 'flex';
+    // ===== Lightbox =====
+    function openLightbox(img, caption = "") {
+      const lightbox = document.getElementById('lightbox');
+      const lightboxImg = document.getElementById('lightbox-img');
+      const lightboxCaption = document.getElementById('lightbox-caption');
+      if (!lightbox) return;
+      lightbox.style.display = 'flex';
+      if (lightboxImg && img && img.src) lightboxImg.src = img.src;
+      if (lightboxCaption) lightboxCaption.textContent = caption || img.alt || "";
     }
     function closeLightbox() {
-      document.getElementById('lightbox').style.display = 'none';
+      const lightbox = document.getElementById('lightbox');
+      if (!lightbox) return;
+      lightbox.style.display = 'none';
     }
+
+    // ===== Memory Game init (layer 4) =====
+    let memoryInitialized = false;
+    function initMemoryGame() {
+      if (memoryInitialized) return;
+      memoryInitialized = true;
+
+      const cards = Array.from(document.querySelectorAll(".memory-card"));
+      let hasFlippedCard = false;
+      let lockBoard = false;
+      let firstCard, secondCard;
+      let matchedCount = 0;
+
+      cards.forEach(c => c.classList.remove('flip'));
+
+      function flipCard() {
+        if (lockBoard) return;
+        if (this === firstCard) return;
+        this.classList.add('flip');
+
+        if (!hasFlippedCard) {
+          hasFlippedCard = true;
+          firstCard = this;
+          return;
+        }
+        secondCard = this;
+        checkForMatch();
+      }
+
+      function checkForMatch() {
+        const isMatch = firstCard.dataset.name === secondCard.dataset.name;
+        if (isMatch) {
+          disableCards();
+        } else {
+          unflipCards();
+        }
+      }
+
+      function disableCards() {
+        firstCard.removeEventListener('click', flipCard);
+        secondCard.removeEventListener('click', flipCard);
+        resetBoard();
+        matchedCount++;
+        if (matchedCount === 4) {
+          const nextBtn = document.getElementById('nextBtnLayer4');
+          if (nextBtn) nextBtn.style.display = 'inline-block';
+        }
+      }
+
+      function unflipCards() {
+        lockBoard = true;
+        setTimeout(() => {
+          firstCard.classList.remove('flip');
+          secondCard.classList.remove('flip');
+          resetBoard();
+        }, 800);
+      }
+
+      function resetBoard() {
+        [hasFlippedCard, lockBoard] = [false, false];
+        [firstCard, secondCard] = [null, null];
+      }
+
+      function shuffle() {
+        cards.forEach(card => {
+          const randomPos = Math.floor(Math.random() * 8);
+          card.style.order = randomPos;
+        });
+      }
+
+      cards.forEach(card => card.addEventListener('click', flipCard));
+      shuffle();
+    }
+
+    showLayer(0);
   </script>
 </body>
 </html>
