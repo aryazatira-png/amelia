@@ -1,6 +1,6 @@
 /* ---------------------------
-  script.js (FINAL FIXED with Login)
-  Include: login, umur, layer, lightbox, autoplay, rain, random quotes, memory game
+  script.js (FINAL FIXED with Login + Question Layer)
+  Include: login, umur, layer, lightbox, autoplay, rain, random quotes, memory game, question layer
 --------------------------- */
 
 let currentLayer = 0;
@@ -243,7 +243,7 @@ function nextLayer() {
   forceMusicPlay();
   // Fix: Check if we are on the login screen
   if (currentLayer === 0) return;
-  
+
   currentLayer = Math.min(currentLayer + 1, layers.length - 1);
   showLayer(currentLayer);
 }
@@ -252,7 +252,7 @@ function prevLayer() {
   forceMusicPlay();
   // Fix: Check if we are on the login screen
   if (currentLayer === 0) return;
-  
+
   currentLayer = Math.max(currentLayer - 1, 0);
   showLayer(currentLayer);
 }
@@ -367,96 +367,4 @@ function startRain(event) {
       img.style.animationDuration = (2 + Math.random() * 3) + 's';
       container.appendChild(img);
 
-      setTimeout(() => { if (img && img.parentNode) img.remove(); }, maxLife - 1000);
-    }, i * 160);
-  }
-
-  setTimeout(() => {
-    if (container && container.parentNode) container.remove();
-    rainRunning = false;
-  }, maxLife + jumlah * 200);
-
-  // tombol bisa diklik lagi setelah 3 detik
-  setTimeout(() => { if (btn) btn.disabled = false; }, 3000);
-}
-
-// random quote
-function randomQuote() {
-  const target = document.getElementById('random-quote') || document.getElementById('random-text');
-  if (!target) return;
-  const idx = Math.floor(Math.random() * quotes.length);
-  target.textContent = quotes[idx];
-}
-
-// ========== MEMORY GAME (Layer 4) ==========
-let memoryFlipped = [];
-let memoryLock = false;
-
-function initMemoryGame() {
-  const game = document.getElementById('memory-game');
-  if (!game) return;
-
-  // Clear existing cards
-  game.innerHTML = '';
-  
-  const cardsData = [
-    { name: "amel1", src: "asset/amel1.jpeg" },
-    { name: "amel2", src: "asset/amel2.jpeg" },
-    { name: "amel3", src: "asset/amel3.jpeg" },
-    { name: "amel4", src: "asset/amel4.jpeg" }
-  ];
-
-  const cards = [...cardsData, ...cardsData];
-
-  // shuffle
-  cards.sort(() => Math.random() - 0.5);
-
-  cards.forEach(cardData => {
-    const card = document.createElement('div');
-    card.classList.add('memory-card');
-    card.dataset.name = cardData.name;
-    card.innerHTML = `
-      <img class="front-face" src="${cardData.src}" alt="${cardData.name}">
-      <img class="back-face" src="asset/back.jpeg" alt="back">
-    `;
-    card.addEventListener('click', onMemoryCardClick);
-    game.appendChild(card);
-  });
-}
-
-function onMemoryCardClick(e) {
-  const card = e.currentTarget;
-  if (memoryLock || card.classList.contains('flip')) return;
-
-  card.classList.add('flip');
-  memoryFlipped.push(card);
-
-  if (memoryFlipped.length === 2) {
-    checkMemoryMatch();
-  }
-}
-
-function checkMemoryMatch() {
-  const [c1, c2] = memoryFlipped;
-  const match = c1.dataset.name === c2.dataset.name;
-
-  if (match) {
-    c1.removeEventListener('click', onMemoryCardClick);
-    c2.removeEventListener('click', onMemoryCardClick);
-    memoryFlipped = [];
-    
-    // Check if all cards are matched
-    const flippedCards = document.querySelectorAll('.memory-card.flip');
-    if (flippedCards.length === document.querySelectorAll('.memory-card').length) {
-      document.getElementById("nextBtnLayer4").style.display = "inline-block";
-    }
-  } else {
-    memoryLock = true;
-    setTimeout(() => {
-      c1.classList.remove('flip');
-      c2.classList.remove('flip');
-      memoryFlipped = [];
-      memoryLock = false;
-    }, 1000);
-  }
-}
+      set
