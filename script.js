@@ -1,6 +1,6 @@
 /* ---------------------------
-  script.js (FINAL FIXED)
-  Include: umur, layer, lightbox, autoplay, rain, random quotes, memory game
+  script.js (FINAL FIXED with Login)
+  Include: login, umur, layer, lightbox, autoplay, rain, random quotes, memory game
 --------------------------- */
 
 let currentLayer = 0;
@@ -17,8 +17,8 @@ const quotes = [
   "Cantikmu bukan cuma di luar, tapi juga dari cara kamu mikir",
   "Jangan lupa, kamu tuh punya nilai yang nggak bisa digantiin sama siapa pun.",
   "Kamu itu berharga, bahkan di hari-hari ketika kamu ngerasa biasa aja.",
-"mama teacher papah engineer OR mama teacher papah lawyer? 🤪", 
-"fakultas boleh red flag tapi sifatku mah green flag",
+  "mama teacher papah engineer OR mama teacher papah lawyer? 🤪",
+  "fakultas boleh red flag tapi sifatku mah green flag",
   "Jangan pernah berhenti percaya sama diri kamu sendiri, karena banyak orang percaya sama kamu.",
   "Kamu cantik dengan caramu sendiri, nggak perlu ngebandingin diri sama siapa pun.",
   "Kamu punya aura yang bikin orang lain betah ada di deketmu.",
@@ -175,24 +175,46 @@ document.addEventListener('DOMContentLoaded', function() {
   layers = Array.from(document.querySelectorAll('.layer'));
   audio = document.getElementById('bg-music');
 
-  showLayer(0); // splash aktif duluan
+  // Fix: Show the login layer first, which is at index 0
+  showLayer(0);
 
-  const btn = document.getElementById('startBtn');
-  if (btn) {
-    btn.addEventListener('click', function (e) { e.preventDefault(); startExperience(); });
-    btn.addEventListener('touchstart', function (e) { e.preventDefault(); startExperience(); }, { passive: false });
+  // Login button logic
+  const loginBtn = document.getElementById('loginBtn');
+  if (loginBtn) {
+    loginBtn.addEventListener('click', handleLogin);
   }
 
+  // Start button logic
+  const startBtn = document.getElementById('startBtn');
+  if (startBtn) {
+    startBtn.addEventListener('click', startExperience);
+  }
+
+  // Update umur every second
   updateUmur();
   setInterval(updateUmur, 1000);
 
   setupChromeAutoplay();
 });
 
+// New function for handling login
+function handleLogin() {
+  const usernameInput = document.getElementById("username").value.toLowerCase();
+  const passwordInput = document.getElementById("password").value;
+  const loginLayer = document.getElementById("login");
+
+  if (usernameInput === "amelia okta ramadani" && passwordInput === "111026") {
+    loginLayer.style.display = 'none'; // Sembunyikan layer login
+    startExperience(); // Lanjutkan ke layer splash
+  } else {
+    alert("Username atau password salah!");
+  }
+}
+
 // start experience
 function startExperience() {
-  currentLayer = 1;
-  showLayer(currentLayer);
+  // Fix: The splash screen is now at index 1, not 0
+  showLayer(1);
   forceMusicPlay();
 }
 
@@ -203,11 +225,11 @@ function showLayer(index) {
 
   layers.forEach((layer, i) => {
     if (i === index) {
+      layer.style.display = 'flex';
       layer.classList.add('active');
-      layer.classList.remove('hidden');
     } else {
+      layer.style.display = 'none';
       layer.classList.remove('active');
-      layer.classList.add('hidden');
     }
   });
 
@@ -219,12 +241,18 @@ function showLayer(index) {
 
 function nextLayer() {
   forceMusicPlay();
+  // Fix: Check if we are on the login screen
+  if (currentLayer === 0) return;
+  
   currentLayer = Math.min(currentLayer + 1, layers.length - 1);
   showLayer(currentLayer);
 }
 
 function prevLayer() {
   forceMusicPlay();
+  // Fix: Check if we are on the login screen
+  if (currentLayer === 0) return;
+  
   currentLayer = Math.max(currentLayer - 1, 0);
   showLayer(currentLayer);
 }
@@ -368,25 +396,28 @@ function initMemoryGame() {
   const game = document.getElementById('memory-game');
   if (!game) return;
 
+  // Clear existing cards
   game.innerHTML = '';
-  const cards = [];
-  const totalPairs = 4;
+  
+  const cardsData = [
+    { name: "amel1", src: "asset/amel1.jpeg" },
+    { name: "amel2", src: "asset/amel2.jpeg" },
+    { name: "amel3", src: "asset/amel3.jpeg" },
+    { name: "amel4", src: "asset/amel4.jpeg" }
+  ];
 
-  for (let i = 1; i <= totalPairs; i++) {
-    cards.push(`asset/amel${i}.jpeg`);
-    cards.push(`asset/amel${i}.jpeg`);
-  }
+  const cards = [...cardsData, ...cardsData];
 
   // shuffle
   cards.sort(() => Math.random() - 0.5);
 
-  cards.forEach(src => {
+  cards.forEach(cardData => {
     const card = document.createElement('div');
-    card.className = 'memory-card';
-    card.dataset.image = src;
+    card.classList.add('memory-card');
+    card.dataset.name = cardData.name;
     card.innerHTML = `
-      <div class="front"></div>
-      <div class="back"><img src="${src}" alt=""></div>
+      <img class="front-face" src="${cardData.src}" alt="${cardData.name}">
+      <img class="back-face" src="asset/back.jpeg" alt="back">
     `;
     card.addEventListener('click', onMemoryCardClick);
     game.appendChild(card);
@@ -395,9 +426,9 @@ function initMemoryGame() {
 
 function onMemoryCardClick(e) {
   const card = e.currentTarget;
-  if (memoryLock || card.classList.contains('flipped')) return;
+  if (memoryLock || card.classList.contains('flip')) return;
 
-  card.classList.add('flipped');
+  card.classList.add('flip');
   memoryFlipped.push(card);
 
   if (memoryFlipped.length === 2) {
@@ -407,15 +438,23 @@ function onMemoryCardClick(e) {
 
 function checkMemoryMatch() {
   const [c1, c2] = memoryFlipped;
-  const match = c1.dataset.image === c2.dataset.image;
+  const match = c1.dataset.name === c2.dataset.name;
 
   if (match) {
+    c1.removeEventListener('click', onMemoryCardClick);
+    c2.removeEventListener('click', onMemoryCardClick);
     memoryFlipped = [];
+    
+    // Check if all cards are matched
+    const flippedCards = document.querySelectorAll('.memory-card.flip');
+    if (flippedCards.length === document.querySelectorAll('.memory-card').length) {
+      document.getElementById("nextBtnLayer4").style.display = "inline-block";
+    }
   } else {
     memoryLock = true;
     setTimeout(() => {
-      c1.classList.remove('flipped');
-      c2.classList.remove('flipped');
+      c1.classList.remove('flip');
+      c2.classList.remove('flip');
       memoryFlipped = [];
       memoryLock = false;
     }, 1000);
