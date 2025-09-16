@@ -1,107 +1,168 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Amell Birthday Web</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* ===== login layer style (simple & responsive, tweak bebas) ===== */
-    .login-layer {
+    /* New styles for the login layer */
+    #login {
+      background-color: black;
+      color: #fff;
       display: flex;
       flex-direction: column;
-      align-items: center;
       justify-content: center;
-      gap: 18px;
-      height: 100vh;
-      width: 100%;
-      background: black;
-      color: white;
-    }
-    .login-title {
-      font-size: 5vw;
-      font-weight: 800;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: #fff;
-      text-shadow: 0 0 12px rgba(255,105,180,0.9);
-    }
-    .login-box {
-      width: min(520px, 92%);
-      background: #ff69b4;
-      border-radius: 22px;
-      padding: 22px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-    }
-    .login-row {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-    .login-row label {
-      font-weight: 700;
-      font-size: 1rem;
-      text-transform: uppercase;
-      color: #fff;
-    }
-    .login-row input {
-      height: 48px;
-      border-radius: 12px;
-      border: none;
-      padding: 8px 12px;
-      font-size: 1rem;
-      outline: none;
-    }
-    .login-actions {
-      display:flex;
-      justify-content: space-between;
-      gap: 12px;
       align-items: center;
+      height: 100vh;
+      width: 100vw;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+      text-align: center;
+      padding: 20px;
+      box-sizing: border-box;
     }
-    .login-actions button{
-      background: #fff;
-      color: #ff1493;
-      padding: 10px 16px;
-      border-radius: 12px;
+    .login-container {
+      background-color: #ff69b4; /* Pink */
+      padding: 40px;
+      border-radius: 20px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+    .login-container h2 {
+      margin-top: 0;
+      color: #fff;
+      text-shadow: 0 0 10px #fff, 0 0 20px #fff;
+    }
+    .login-container input {
+      width: 100%;
+      padding: 15px;
+      margin: 10px 0 20px 0;
       border: none;
-      cursor: pointer;
-      font-weight:700;
+      border-radius: 10px;
+      font-size: 16px;
+      box-sizing: border-box;
     }
-    .login-error {
-      color: #ffe8e8;
-      background: rgba(0,0,0,0.25);
-      padding: 6px 10px;
-      border-radius: 8px;
-      display:none;
+    .login-container input::placeholder {
+      color: #aaa;
+    }
+    .login-container button {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 10px;
+      background-color: #fff;
+      color: #ff69b4;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .login-container button:hover {
+      background-color: #eee;
+    }
+    .login-container p {
+      color: #fff;
+      font-size: 14px;
+      margin-top: 20px;
+    }
+    .hidden {
+      display: none !important;
     }
 
-    /* minimal: keep original styles for other layers (user's CSS usually in style.css) */
-    /* ...rain + memory styles will use external CSS; keep conflicts minimal... */
-    /* small helper so login sits above splash in z-order if necessary */
-    #login { z-index: 9999; position: fixed; top:0; left:0; }
+    /* Efek hujan gambar */
+    .rain-img {
+      position: fixed;
+      top: -100px;
+      width: 50px;
+      height: auto;
+      animation: fall linear forwards;
+      pointer-events: none;
+      z-index: 9999;
+    }
+    @keyframes fall {
+      to {
+        transform: translateY(110vh);
+        opacity: 0;
+      }
+    }
+
+    /* Memory Game */
+    .memory-game {
+      width: 90%;
+      max-width: 600px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      perspective: 1000px;
+    }
+    .memory-card {
+      width: 100%;
+      aspect-ratio: 3/4;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.6s;
+      cursor: pointer;
+    }
+    .memory-card.flip {
+      transform: rotateY(180deg);
+    }
+    .front-face, .back-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 10px;
+      backface-visibility: hidden;
+      object-fit: cover;
+      top: 0;
+      left: 0;
+    }
+    .front-face { transform: rotateY(180deg); }
+    .back-face { transform: rotateY(0deg); background: #ff69b4; }
+
+    #nextBtnLayer4 {
+      display: none;
+      margin-top: 20px;
+    }
+
+    /* Lightbox */
+    .lightbox {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+    }
+    .lightbox.hidden { display: none; }
+    .lightbox-content {
+      max-width: 90%;
+      text-align: center;
+    }
+    .lightbox-content img {
+      max-width: 100%;
+      border-radius: 10px;
+    }
+    .lightbox-content p {
+      color: #fff;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
 
-  <div id="login" class="layer active login-layer">
-    <div class="login-title">LOGIN</div>
-    <div class="login-box" role="form" aria-label="Login form">
-      <div class="login-row">
-        <label for="login-name">Nama</label>
-        <input id="login-name" type="text" placeholder="masukkan nama..." autocomplete="name" />
-      </div>
-      <div class="login-row">
-        <label for="login-pass">Password</label>
-        <input id="login-pass" type="password" placeholder="masukkan password..." autocomplete="current-password" />
-      </div>
-
-      <div style="display:flex;justify-content:space-between;align-items:center;">
-        <div class="login-error" id="login-error">Nama atau password salah.</div>
-        <div class="login-actions">
-          <button id="login-btn">MASUK</button>
-        </div>
-      </div>
+  <div id="login" class="layer active">
+    <div class="login-container">
+      <h2 class="glow-text">LOGIN</h2>
+      <input type="text" id="username" placeholder="masukkan nama...">
+      <input type="password" id="password" placeholder="masukkan password...">
+      <button id="loginBtn">MASUK</button>
+      <p>Gunakan: nama = amelia okta ramadani (lowercase), pass - 111026</p>
     </div>
   </div>
 
@@ -145,8 +206,8 @@
     <div class="gallery">
       <img src="asset/foto1.jpeg" alt="Foto 1" onclick="openLightbox(this, 'Always be yourself! Dont change your happiness just because of other people')">
       <img src="asset/foto2.jpeg" alt="Foto 2" onclick="openLightbox(this, 'Web ini bakalan ABADI, ada penghitung real time di slide 2 dan akan bertambah terus sesuai umur amel!')">
-      <img src="asset/foto3.jpeg" alt="Foto 3" onclick="openLightbox(this, 'Semoga amel always dapetin semuanya, dapet pendidikan, dapet rezeki, dapet temen baik, dapet cowok baik, dapet kesehatan baik, dapet mood baik, dapet everything!')">
-      <img src="asset/foto4.jpeg" alt="Foto 4" onclick="openLightbox(this, 'Inget! Terus improve and terus evaluasi, because you have an extraordinary potential! HAPUS SIFAT AVOIDANT LU!')">
+      <img src="asset/foto3.jpeg" alt="Foto 3" onclick="openLightbox(this, 'Semoga amel always dapetin semuanya, dapet pendidikan, dapet rezeki, dapet temen baik, dapet cowok baik, dapet kesehatan baik, dapet mood baik, dapet everything yg baik!')">
+      <img src="asset/foto4.jpeg" alt="Foto 4" onclick="openLightbox(this, 'Inget! Terus improve and terus evaluasi, because you have an extraordinary potential! HAPUS SIFAT AVOIDANT LU')">
     </div>
     <button onclick="prevLayer()">⬅ Back</button>
     <button onclick="nextLayer()">Next ➡</button>
@@ -157,7 +218,7 @@
       <source src="asset/video4.mp4" type="video/mp4">
     </video>
     <div class="overlay"></div>
-    <h2 class="glow-text">COBA NYOCOKIN KARTU DULU!</h2>
+    <h2 class="glow-text">ADA TANTANGAN DIKIT</h2>
     <div class="memory-game" id="memory-game">
       <div class="memory-card" data-name="amel1">
         <img class="front-face" src="asset/amel1.jpeg" alt="amel1">
@@ -192,10 +253,8 @@
         <img class="back-face" src="asset/back.jpeg" alt="back">
       </div>
     </div>
-    <div style="display:flex; gap:16px; margin-top:18px; align-items:center;">
-      <button onclick="prevLayer()">⬅ Back</button>
-      <button id="nextBtnLayer4" style="display:none;" onclick="nextLayer()">PRETT</button>
-    </div>
+    <button onclick="prevLayer()">⬅ Back</button>
+    <button id="nextBtnLayer4" onclick="nextLayer()">PRETT</button>
   </div>
 
   <div id="layer5" class="layer">
@@ -206,9 +265,9 @@
     <h2>POEMS ABOUT YOU</h2>
     <div class="gallery">
       <img src="asset/foto5.jpeg" alt="Foto 5" onclick="openLightbox(this, 'nyoba nulis di binder')">
-      <img src="asset/foto6.jpeg" alt="Foto 6" onclick="openLightbox(this, 'Gua gak pernah naksir, bogoh, ataupun mau sama lu, ini cuman pujian gua tentang lu')">
-      <img src="asset/foto7.jpeg" alt="Foto 7" onclick="openLightbox(this, 'Emang untuk 2 puisi ini gua bikin cuman halu tapi pas dibaca malah cocok buat amel, jangan salah paham!')">
-      <img src="asset/foto88.jpeg" alt="Foto 8" onclick="openLightbox(this, 'Ini sebelum gua ke bandung, keduanya bukan tentang lu tapi cuman halu, but tbh pas baca malah kebayang maneh,hehe maap gak maksud apapun')">
+      <img src="asset/foto6.jpeg" alt="Foto 6" onclick="openLightbox(this, 'Gua gak pernah naksir,atau sejenisnya')">
+      <img src="asset/foto7.jpeg" alt="Foto 7" onclick="openLightbox(this, 'Emang untuk 2 puisi ini cocok buat Amel, tapi jangan salah paham')">
+      <img src="asset/foto88.jpeg" alt="Foto 8" onclick="openLightbox(this, 'Ini sebelum gua ke bandung, pas nulis keduanya cuman halu, tapi pas baca malah mikir diri elo,  bukan maksud apa-apa ya🙏🏾')">
     </div>
     <button onclick="prevLayer()">⬅ Back</button>
     <button onclick="nextLayer()">Next ➡</button>
@@ -219,7 +278,7 @@
       <source src="asset/video6.mp4" type="video/mp4">
     </video>
     <div class="overlay"></div>
-    <h2 class="glow-text">GIMANA RASANYA DIUCAPIN ULTAH KAYA GINI SAMA COWO SEPINTER DAN SEKEREN GWEH😎</h2>
+    <h2 class="glow-text">GIMANA RASANYA DIUCAPIN DAN DIBUATIN WEB, SAMA COWOK SEKEREN DAN SEPINTER AING😎🤙🏽</h2>
     <p>btw backgroundny ucapan dari berbagai bahasa</p>
     <button onclick="prevLayer()">⬅ Back</button>
     <button onclick="startRain()">IDIOT</button>
@@ -237,7 +296,7 @@
     <button onclick="randomQuote()">🎲 NYOCOT</button>
   </div>
 
-  <div id="lightbox" class="lightbox" style="display:none;" onclick="closeLightbox()">
+  <div id="lightbox" class="lightbox hidden" onclick="closeLightbox()">
     <div class="lightbox-content">
       <img id="lightbox-img" src="">
       <p id="lightbox-caption"></p>
@@ -247,105 +306,70 @@
   <audio id="bg-music" src="asset/musik.mp3" loop></audio>
 
   <script>
-    // --- basic layer system (login is index 0, splash index 1, etc.) ---
     let currentLayer = 0;
-    const layers = Array.from(document.querySelectorAll('.layer'));
+    const layers = document.querySelectorAll(".layer");
 
-    function showLayer(idx) {
-      idx = Math.max(0, Math.min(idx, layers.length - 1));
-      layers.forEach((l, i) => {
-        if (i === idx) {
-          l.classList.add('active');
-        } else {
-          l.classList.remove('active');
-        }
-      });
-      currentLayer = idx;
-      // start memory game when reach layer4 (index 4)
-      if (idx === 4) {
-        // run initialization if not already
-        if (typeof initMemoryGame === 'function') initMemoryGame();
-      }
-    }
+    // Login logic
+    document.getElementById("loginBtn").addEventListener("click", () => {
+      const usernameInput = document.getElementById("username").value.toLowerCase();
+      const passwordInput = document.getElementById("password").value;
+      const loginLayer = document.getElementById("login");
 
-    function nextLayer() {
-      showLayer(Math.min(currentLayer + 1, layers.length - 1));
-    }
-    function prevLayer() {
-      showLayer(Math.max(currentLayer - 1, 0));
-    }
-
-    // login logic
-    const LOGIN_NAME = 'amelia okta ramadani';
-    const LOGIN_PASS = '111026';
-    const loginBtn = document.getElementById('login-btn');
-    const loginName = document.getElementById('login-name');
-    const loginPass = document.getElementById('login-pass');
-    const loginError = document.getElementById('login-error');
-
-    function tryLogin() {
-      const nameVal = (loginName.value || '').trim().toLowerCase();
-      const passVal = (loginPass.value || '').trim();
-      if (nameVal === LOGIN_NAME && passVal === LOGIN_PASS) {
-        // Correct login
-        loginError.style.display = 'none';
-        showLayer(1);
+      if (usernameInput === "amelia okta ramadani" && passwordInput === "111026") {
+        loginLayer.classList.add("hidden");
+        showLayer(0); // Show splash screen after successful login
       } else {
-        // Incorrect login
-        loginError.style.display = 'block';
-        document.querySelector('.login-box').animate(
-          [{ transform: 'translateX(-6px)' }, { transform: 'translateX(6px)' }, { transform: 'translateX(0)' }],
-          { duration: 300, iterations: 1 }
-        );
+        alert("Username atau password salah!");
       }
-    }
-
-    loginBtn.addEventListener('click', tryLogin);
-    [loginName, loginPass].forEach(el => el.addEventListener('keydown', function(e){
-      if (e.key === 'Enter') tryLogin();
-    }));
-
-    // start splash start button (still present)
-    const startBtn = document.getElementById('startBtn');
-    if (startBtn) startBtn.addEventListener('click', () => {
-      showLayer(2); 
-      const audio = document.getElementById('bg-music');
-      if (audio) audio.play().catch(()=>{});
     });
 
-    // ===== Hitung Umur Real-Time =====
+    function showLayer(n) {
+      layers.forEach(l => l.classList.remove("active"));
+      layers[n].classList.add("active");
+      currentLayer = n;
+      if (n === 4) initMemoryGame();
+    }
+    function nextLayer() {
+      // Check if it's the splash screen (index 0)
+      if (currentLayer === 0) {
+        showLayer(1);
+        document.getElementById("bg-music").play();
+      } else if (currentLayer < layers.length - 1) {
+        showLayer(currentLayer + 1);
+      }
+    }
+    function prevLayer() { if (currentLayer > 0) showLayer(currentLayer - 1); }
+
+    document.getElementById("startBtn").addEventListener("click", () => {
+      showLayer(1);
+      document.getElementById("bg-music").play();
+    });
+
+    // Hitung Umur
     function updateUmur() {
       const lahir = new Date("2006-10-11T00:00:00");
       const sekarang = new Date();
-
       let tahun = sekarang.getFullYear() - lahir.getFullYear();
       let bulan = sekarang.getMonth() - lahir.getMonth();
       let hari = sekarang.getDate() - lahir.getDate();
       let jam = sekarang.getHours() - lahir.getHours();
       let menit = sekarang.getMinutes() - lahir.getMinutes();
       let detik = sekarang.getSeconds() - lahir.getSeconds();
-
       if (detik < 0) { detik += 60; menit--; }
       if (menit < 0) { menit += 60; jam--; }
       if (jam < 0) { jam += 24; hari--; }
-      if (hari < 0) {
-        const prevMonth = new Date(sekarang.getFullYear(), sekarang.getMonth(), 0);
-        hari += prevMonth.getDate(); bulan--;
-      }
+      if (hari < 0) { const prevMonth = new Date(sekarang.getFullYear(), sekarang.getMonth(), 0); hari += prevMonth.getDate(); bulan--; }
       if (bulan < 0) { bulan += 12; tahun--; }
-
-      const el = document.getElementById('umur');
-      if (el) el.textContent = `${tahun} tahun, ${bulan} bulan, ${hari} hari, ${jam} jam, ${menit} menit, ${detik} detik`;
+      document.getElementById("umur").textContent = `${tahun} tahun, ${bulan} bulan, ${hari} hari, ${jam} jam, ${menit} menit, ${detik} detik`;
     }
-    setInterval(updateUmur, 1000);
-    updateUmur();
+    setInterval(updateUmur, 1000); updateUmur();
 
-    // ===== Efek Hujan Gambar =====
+    // Efek Hujan
     function startRain() {
       const container = document.body;
       for (let i = 0; i < 20; i++) {
         setTimeout(() => {
-          let img = document.createElement('img');
+          let img = document.createElement("img");
           img.src = "asset/hujan.png";
           img.classList.add("rain-img");
           img.style.left = Math.random() * window.innerWidth + "px";
@@ -356,96 +380,203 @@
       }
     }
 
-    // ===== Lightbox =====
-    function openLightbox(img, caption = "") {
-      const lightbox = document.getElementById('lightbox');
-      const lightboxImg = document.getElementById('lightbox-img');
-      const lightboxCaption = document.getElementById('lightbox-caption');
-      if (!lightbox) return;
-      lightbox.style.display = 'flex';
-      if (lightboxImg && img && img.src) lightboxImg.src = img.src;
-      if (lightboxCaption) lightboxCaption.textContent = caption || img.alt || "";
+    // Lightbox
+    function openLightbox(img, caption) {
+      document.getElementById("lightbox").classList.remove("hidden");
+      document.getElementById("lightbox-img").src = img.src;
+      document.getElementById("lightbox-caption").textContent = caption;
     }
-    function closeLightbox() {
-      const lightbox = document.getElementById('lightbox');
-      if (!lightbox) return;
-      lightbox.style.display = 'none';
+    function closeLightbox() { document.getElementById("lightbox").classList.add("hidden"); }
+
+    // Quotes
+const quotes = [
+  "MANEH NU BADMOOD kenapa sekitar yang lu diemin?",
+  "Rek kitu wae?",
+  "Ulah sok ijut, asbun mah asbun we",
+  "Kamu punya kekuatan buat ngelewatin semua hari berat, jangan pernah ngeremehin diri sendiri.",
+  "Cantikmu bukan cuma di luar, tapi juga dari cara kamu mikir",
+  "Jangan lupa, kamu tuh punya nilai yang nggak bisa digantiin sama siapa pun.",
+  "Kamu itu berharga, bahkan di hari-hari ketika kamu ngerasa biasa aja.",
+  "Jangan pernah berhenti percaya sama diri kamu sendiri, karena banyak orang percaya sama kamu.",
+  "Kamu cantik dengan caramu sendiri, nggak perlu ngebandingin diri sama siapa pun.",
+  "Kamu punya aura yang bikin orang lain betah ada di deketmu.",
+  "Jangan lupa istirahat, karena semangatmu penting buat orang-orang yang sayang sama kamu.",
+  "Kamu tuh bisa bikin hal sederhana jadi indah, itu salah satu kelebihanmu.",
+  "Setiap langkahmu punya arti, bahkan kalau sekarang kamu belum nyadar.",
+  "Kamu tuh cantik tanpa harus berusaha keras.",
+  "Jangan pernah mikir kamu kurang, karena kamu lebih dari cukup.",
+  "Kamu punya hati yang kuat, meski kadang kamu ngerasa rapuh.",
+  "Cantikmu nggak cuma soal wajah, tapi juga soal cara kamu ngejalanin hidup.",
+  "Kamu itu berharga, jangan biarin siapa pun bikin kamu ragu soal itu.",
+  "Kamu pantes bahagia, lebih dari yang kamu bayangin.",
+  "Kamu tuh bukti kalau cantik dan sederhana bisa jalan bareng.",
+  "Kamu punya semangat yang bisa jadi inspirasi orang lain.",
+  "Jangan pernah takut gagal, karena kamu punya potensi lebih besar dari yang kamu kira.",
+"mama teacher papah engineer OR mama teacher papah lawyer? 🤪",
+"fakultas boleh red flag tapi sifatku mah green flag",
+  "Kamu berharga bukan karena orang lain bilang, tapi karena memang begitu adanya.",
+  "Kamu punya otak cerdas dan hati hangat, kombinasi langka yang nggak semua orang punya.",
+  "Kamu tuh kayak matahari kecil, selalu ada cahaya bahkan di hari mendung.",
+  "Jangan biarin komentar orang bikin kamu lupa betapa berharganya dirimu.",
+  "Kamu cantik, tapi juga punya kekuatan buat berdiri sendiri.",
+  "Kamu punya cara unik buat bikin orang lain ketawa.",
+  "Jangan pernah mikir kamu sendirian, banyak orang yang care sama kamu.",
+  "Kamu itu cantik, tapi yang bikin lebih indah adalah hatimu.",
+  "Semangatmu adalah sesuatu yang patut dihargai, jangan biarin padam.",
+  "Kamu tuh punya daya tarik yang nggak bisa ditiru siapa pun.",
+  "Kamu berharga bahkan kalau dunia lagi nggak adil sama kamu.",
+  "Cantikmu bukan cuma soal mata yang melihat, tapi hati yang ngerasain.",
+  "Kamu punya potensi besar, tinggal nunggu waktu buat bersinar.",
+  "Jangan lupa, kamu pantas dapet yang terbaik dalam hidup.",
+  "Kamu cantik dengan segala keunikanmu, dan itu nggak bisa diganti.",
+  "Kamu tuh kuat, bahkan kalau kamu sendiri nggak sadar.",
+  "Kamu punya energi yang bisa bikin orang lain semangat lagi.",
+  "Kamu berharga, jangan biarin keraguan nutupin itu.",
+  "Kamu itu cantik, dan keindahanmu nggak akan pernah sama dengan orang lain.",
+  "Kamu punya kekuatan untuk bikin hari orang lain lebih baik.",
+  "Jangan pernah takut bermimpi, karena kamu mampu buat ngejar semuanya.",
+  "Kamu berharga, bahkan di detik-detik kamu ngerasa nggak berguna.",
+  "Cantikmu abadi karena datang dari ketulusan.",
+  "Kamu punya hati yang tulus, itu lebih indah dari segalanya.",
+  "Kamu tuh berani, meski kadang nggak nunjukin.",
+  "Kamu cantik dan punya kecerdasan yang jalan beriringan.",
+  "Jangan lupa, kamu tuh versi terbaik dari dirimu sendiri.",
+  "Kamu berharga, cantik, kuat, dan pantas bahagia sepenuhnya.",
+  "Kamu gak butuh filter, dunia aja iri sama cantiknya kamu",
+  "Kamu berharga bahkan di hari ketika kamu merasa kacau",
+  "You're worthy",
+  "Kamu salah satu alasan kenapa kata indah itu ada",
+  "Cantik iya, berisik apalagi",
+  "BACOT maneh mah lewih tibatan radio butut",
+  "Apapun yang terjadi inget lu punya mimpi",
+  "Sipit tapi bukan cina",
+  "Asbun, idiot, banyak bacot",
+  "You will be a good mother",
+  "Semangat kuliahnya!",
+  "Wihh calon GURU🤩",
+  "Jangan ancur karena omongan orang!",
+  "Amel udah lebih dari cukup",
+  "Always jadi diri sendiri💫",
+  "Jangan takut buat nerima tantangan baru",
+  "Semuanya dimulai dari diri sendiri",
+  "Jangan bikin masalalu jadi sebuah alasan",
+  "Akan ada orang yang jauh lebih baik datang dihidup amel",
+  "Stay positive",
+  "Terus jadi random jangan berubah",
+  "HAPUS SIFAT AVOIDANT LU ANJAY",
+  "Jangan karena orang lain amel ngerubah kebahagiaan sendiri",
+  "Maneh kayak iklan Shopee, menarik tapi berisik",
+  "Cantik sih, tapi kalau marah ngilang kayak diculik hantu",
+  "Kalau marah mendadak sunyi kayak Antartika",
+  "Yeee nii orang yang sok kuat itu ya?",
+  "Percaya banyak yang masih peduli sama amel!",
+  "Moodnya kayak cuaca diakhir tahun, GAK JELAS!",
+  "IDIOT, ASBUN, BACOT",
+  "Lu asik tapi kadang kayak iklan yt NGESELIN",
+  "Kalau ketawa matanya ilang",
+  "Moodyan geleuh ciga budak TK",
+  "Jangan karena satu orang lu menutup pintu untuk semua orang",
+  "Hidup mah emang kayak gitu",
+  "Yaudah sih, kan masih ada mie ayam untuk dihakan",
+  "Gimana? About you masih jadi your fav song",
+  "Ice cream Oreo emng paling gokil",
+  "Kalau deket sama cowo tuh satu aja, jangan kayak tempat penampungan🗿",
+  "Langkah kecil always better daripada diam",
+  "Hari buruk bukan berarti hidupmu buruk",
+  "Amelia okta ramadani",
+  "Kamu gak perlu jadi matahari buat semua orang",
+  "Amel pantas dicintai kok, asal avoidantnya dihilangin dulu🤭",
+  "Lu tuh cantik banget, cuman pura pura gak tau",
+  "Sia mun asbun sok kurang ajar",
+  "Kenapa maneh kurang ajar na ka aing hgkl??",
+  "Amel spesial dengan cara Amel sendiri",
+  "Gak bakalan ada yang bisa sama kayak diri lu",
+  "Semuanya ada alasan!",
+  "And i give up forever to touch you",
+  "Tuhan terlalu berlebihan naruh mahkluk kayak Amel di dunia yang gila ini",
+  "Wkwkw di bantai kuliah ya?",
+  "Selalu hargai waktu!",
+  "Amel tuh sebenernya pinter, tapi tentu gak lebih pinter daripada ARIA JATIRA",
+  "Nilai dirimu gak bisa untuk ditawar",
+  "Jangan sampai hancur karena cowok",
+  "Hati hati kalau mau cinta cintaan",
+  "Cutoff orang orang yang emang gak pantas buat lu anggep seseorang",
+  "Jangan karena beberapa cowo, lu nganggep semua cowo sama aja",
+  "Ayoo lari, ngapain ngeluh? Amel udah sejauh ini loh",
+  "Dengan pura pura kuat itu gak ngehasilin apapun",
+  "Lu bakal berharga di mata yang tepat",
+  "Siapa lagi ya? Yang bakal ketipu sama penampilan lu, padahal aslinya asbun",
+  "You can do this",
+  "Ada orang orang yang bakalan selalu ada buat lu",
+  "Amel gak pernah berjalan sendirian",
+  "Yaa namanya juga usaha, pasti ada gagalnya",
+  "Cantik, manis, pinter, jago masak, sayang keluarga, peduli, ramah tapi masih moody duhhh sayang banget ya",
+  "Rehan or ilham?",
+  "Bakso or mie ayam?",
+  "Dimana lagi lu nemu temen segokil, sebaik, SEPINTER AING🤭😎",
+  "Mel, percaya semuanya tuh pasti ada alasan",
+  "Itu bukan gagal, namanya juga kan belajar",
+  "Nya bae we ngaran na g usaha",
+  "Kadang emang jelema teh sok lewih lewih batan anjing😭",
+  "Bulan vs Amel, cantikan mana ya?",
+  "Kamu pantas bahagia, jangan lupa itu",
+  "Kamu nggak perlu jadi cahaya terang, cukup jadi lilin kecil yang menghangatkan",
+  "Keberanian bukan nggak takut, tapi tetap jalan meski takut",
+  "Orang hebat bukan berarti nggak pernah gagal",
+  "Yang lebih baik dari diri lu emang banyak, but akan selalu ada perbedaan yg gak bisa orang lain tiru",
+  "Moga masa depan lu gak pecah telinganya ngedenger bacotan lu",
+  "I will be a COOL UNCLE for your future child 🤙🏽",
+  "Sakit ya? Wajar kok namanya juga punya hati",
+  "Nangis aja, orang juga gak bakalan peduli",
+  "Hidupmu tergantung keputusanmu",
+  "FOR A THOUSAND YEARS",
+  "Kamu tuh kombinasi langka cantik + pintar + keras kepala + bacot",
+  "Kalau dunia ini panggung, kamu adalah pemeran utama",
+  "Tetaplah jadi kamu, karena itu udah cukup.",
+  "Kamu bukan sekadar ada, kamu bermakna",
+  "Kalau dunia ini panggung, kamu adalah pemeran utama",
+  "Jangan gampang baper sama orang gak jelas 🤭",
+  "Lu gak bakal tau seberapa berartinya diri lu buat orang lain",
+  "Dah makan?",
+  "Just the way you are",
+  "Meskipun banyak yang hina mata lu, but trust me that's the most beautiful part of yourself",
+  "Malu ah, dah kejauhan gini masa mau nyerah",
+  "Hajar ajaa, gak ada yang tau juga kan? Siapa tau menang"
+];
+    function randomQuote() {
+      const q = quotes[Math.floor(Math.random() * quotes.length)];
+      document.getElementById("random-quote").textContent = q;
     }
 
-    // ===== Memory Game init (layer 4) =====
-    let memoryInitialized = false;
+    // Memory Game
     function initMemoryGame() {
-      if (memoryInitialized) return;
-      memoryInitialized = true;
-
-      const cards = Array.from(document.querySelectorAll(".memory-card"));
-      let hasFlippedCard = false;
-      let lockBoard = false;
-      let firstCard, secondCard;
-      let matchedCount = 0;
-
-      cards.forEach(c => c.classList.remove('flip'));
-
+      const cards = document.querySelectorAll(".memory-card");
+      let hasFlippedCard = false, lockBoard = false, firstCard, secondCard, matchedCount = 0;
+      cards.forEach(card => card.addEventListener("click", flipCard));
+      shuffle();
       function flipCard() {
-        if (lockBoard) return;
-        if (this === firstCard) return;
-        this.classList.add('flip');
-
-        if (!hasFlippedCard) {
-          hasFlippedCard = true;
-          firstCard = this;
-          return;
-        }
-        secondCard = this;
-        checkForMatch();
+        if (lockBoard || this === firstCard) return;
+        this.classList.add("flip");
+        if (!hasFlippedCard) { hasFlippedCard = true; firstCard = this; return; }
+        secondCard = this; checkForMatch();
       }
-
       function checkForMatch() {
-        const isMatch = firstCard.dataset.name === secondCard.dataset.name;
-        if (isMatch) {
-          disableCards();
-        } else {
-          unflipCards();
-        }
+        let isMatch = firstCard.dataset.name === secondCard.dataset.name;
+        isMatch ? disableCards() : unflipCards();
       }
-
       function disableCards() {
-        firstCard.removeEventListener('click', flipCard);
-        secondCard.removeEventListener('click', flipCard);
-        resetBoard();
-        matchedCount++;
-        if (matchedCount === 4) {
-          const nextBtn = document.getElementById('nextBtnLayer4');
-          if (nextBtn) nextBtn.style.display = 'inline-block';
-        }
+        firstCard.removeEventListener("click", flipCard);
+        secondCard.removeEventListener("click", flipCard);
+        resetBoard(); matchedCount++;
+        if (matchedCount === 4) document.getElementById("nextBtnLayer4").style.display = "inline-block";
       }
-
       function unflipCards() {
         lockBoard = true;
-        setTimeout(() => {
-          firstCard.classList.remove('flip');
-          secondCard.classList.remove('flip');
-          resetBoard();
-        }, 800);
+        setTimeout(() => { firstCard.classList.remove("flip"); secondCard.classList.remove("flip"); resetBoard(); }, 1000);
       }
-
-      function resetBoard() {
-        [hasFlippedCard, lockBoard] = [false, false];
-        [firstCard, secondCard] = [null, null];
-      }
-
-      function shuffle() {
-        cards.forEach(card => {
-          const randomPos = Math.floor(Math.random() * 8);
-          card.style.order = randomPos;
-        });
-      }
-
-      cards.forEach(card => card.addEventListener('click', flipCard));
-      shuffle();
+      function resetBoard() { [hasFlippedCard, lockBoard] = [false, false]; [firstCard, secondCard] = [null, null]; }
+      function shuffle() { cards.forEach(card => { card.style.order = Math.floor(Math.random() * 8); }); }
     }
-
-    showLayer(0);
   </script>
 </body>
 </html>
