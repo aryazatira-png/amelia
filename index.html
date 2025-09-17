@@ -72,14 +72,22 @@
     }
 
     /* Efek hujan gambar */
-    .rain-img {
-      position: fixed;
-      top: -100px;
+    .rain-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        overflow: hidden;
+        z-index: 9999;
+    }
+    .raindrop {
+      position: absolute;
+      top: -50px; /* Start above the viewport */
       width: 50px;
       height: auto;
       animation: fall linear forwards;
-      pointer-events: none;
-      z-index: 9999;
     }
     @keyframes fall {
       to {
@@ -342,10 +350,10 @@
       <source src="asset/bgquestion.mp4" type="video/mp4">
     </video>
     <div class="overlay">
-      <h1 class="title glow-text">Kamu mau lanjut sama aku? 🥺</h1>
+      <h1 class="title glow-text">Kamu pasti baper dan jadi suka sama aing kan?😏</h1>
       <div class="btn-container">
-        <button id="yesBtn">Yes ❤️</button>
-        <button id="noBtn">No 😢</button>
+        <button id="yesBtn">IYAA</button>
+        <button id="noBtn">ENGGAK</button>
       </div>
       <button onclick="prevLayer()">⬅ Back</button>
     </div>
