@@ -253,7 +253,7 @@ function handleLogin() {
 
 // start experience
 function startExperience() {
-  // Fix: The splash screen is now at index 1, not 0
+  // FIX: Mengganti index layer dari 2 menjadi 1 untuk menampilkan layer splash yang benar
   showLayer(1);
   forceMusicPlay();
 }
