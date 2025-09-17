@@ -1,6 +1,5 @@
 /* ---------------------------
-  script.js (FINAL FIXED with Persistent Memory Game)
-  Include: login, umur, layer, lightbox, autoplay, rain, random quotes, memory game, dan tombol yes/no
+  script.js (FINAL FIXED - Rechecked Memory Game Logic)
 --------------------------- */
 
 let currentLayer = 0;
@@ -8,7 +7,7 @@ let layers = [];
 let audio = null;
 let musicStarted = false;
 
-// NEW: Array untuk menyimpan ID timeout hujan
+// Array untuk menyimpan ID timeout hujan
 let rainTimeouts = [];
 let rainRunning = false;
 
@@ -108,7 +107,6 @@ function showLayer(index) {
 
   window.scrollTo(0, 0);
 
-  // Perbaikan di sini: Panggil initMemoryGame() hanya jika layer 4 aktif
   if (index === 4) {
       initMemoryGame();
   }
@@ -262,15 +260,21 @@ function randomQuote() {
 }
 
 // ========== MEMORY GAME (Layer 4) ==========
-let memoryFlipped = [];
-let memoryLock = false;
+// Variabel untuk melacak status game
+let hasFlippedCard = false;
+let lockBoard = false;
+let firstCard, secondCard;
 
 function initMemoryGame() {
   const game = document.getElementById('memory-game');
   if (!game) return;
   
-  // Baris ini adalah kuncinya: Memeriksa apakah game sudah dibuat.
-  if (game.children.length > 0) return; // Jika sudah ada, hentikan fungsi
+  // Jika game sudah ada, biarkan saja dan tambahkan kembali event listener
+  if (game.children.length > 0) {
+    const cards = game.querySelectorAll('.memory-card');
+    cards.forEach(card => card.addEventListener('click', flipCard));
+    return;
+  }
   
   const cardsData = [
     { name: "amel1", src: "asset/amel1.jpeg" },
@@ -280,54 +284,67 @@ function initMemoryGame() {
   ];
 
   const cards = [...cardsData, ...cardsData];
-
   cards.sort(() => Math.random() - 0.5);
 
   cards.forEach(cardData => {
     const card = document.createElement('div');
-    card.classList.add('memory-card');
+    card.classList.add('memory-card'); // Penting! Memastikan kelas ini ada
     card.dataset.name = cardData.name;
     card.innerHTML = `
       <img class="front-face" src="asset/${cardData.name}.jpeg" alt="${cardData.name}">
       <img class="back-face" src="asset/back.jpeg" alt="back">
     `;
-    card.addEventListener('click', onMemoryCardClick);
+    card.addEventListener('click', flipCard); // Pastikan event listener terpasang
     game.appendChild(card);
   });
+  // Reset board state saat game dibuat
+  resetBoard();
 }
 
-function onMemoryCardClick(e) {
-  const card = e.currentTarget;
-  if (memoryLock || card.classList.contains('flip')) return;
+function flipCard() {
+  if (lockBoard) return;
+  if (this === firstCard) return;
 
-  card.classList.add('flip');
-  memoryFlipped.push(card);
+  // Baris kunci: Menambah kelas 'flip' untuk memicu animasi CSS
+  this.classList.add('flip');
 
-  if (memoryFlipped.length === 2) {
-    checkMemoryMatch();
+  if (!hasFlippedCard) {
+    hasFlippedCard = true;
+    firstCard = this;
+    return;
   }
+
+  secondCard = this;
+  checkForMatch();
 }
 
-function checkMemoryMatch() {
-  const [c1, c2] = memoryFlipped;
-  const match = c1.dataset.name === c2.dataset.name;
+function checkForMatch() {
+  let isMatch = firstCard.dataset.name === secondCard.dataset.name;
+  isMatch ? disableCards() : unflipCards();
+}
 
-  if (match) {
-    c1.removeEventListener('click', onMemoryCardClick);
-    c2.removeEventListener('click', onMemoryCardClick);
-    memoryFlipped = [];
-
-    const flippedCards = document.querySelectorAll('.memory-card.flip');
-    if (flippedCards.length === document.querySelectorAll('.memory-card').length) {
-      document.getElementById("nextBtnLayer4").style.display = "inline-block";
-    }
-  } else {
-    memoryLock = true;
-    setTimeout(() => {
-      c1.classList.remove('flip');
-      c2.classList.remove('flip');
-      memoryFlipped = [];
-      memoryLock = false;
-    }, 1000);
+function disableCards() {
+  firstCard.removeEventListener('click', flipCard);
+  secondCard.removeEventListener('click', flipCard);
+  
+  const flippedCards = document.querySelectorAll('.memory-card.flip');
+  if (flippedCards.length === document.querySelectorAll('.memory-card').length) {
+    document.getElementById("nextBtnLayer4").style.display = "inline-block";
   }
+  resetBoard();
+}
+
+function unflipCards() {
+  lockBoard = true;
+  setTimeout(() => {
+    // Baris kunci: Menghapus kelas 'flip' untuk memicu animasi kembali
+    firstCard.classList.remove('flip');
+    secondCard.classList.remove('flip');
+    resetBoard();
+  }, 1000);
+}
+
+function resetBoard() {
+  [hasFlippedCard, lockBoard] = [false, false];
+  [firstCard, secondCard] = [null, null];
 }
