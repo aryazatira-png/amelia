@@ -183,12 +183,7 @@ document.addEventListener('DOMContentLoaded', function() {
   if (loginBtn) {
     loginBtn.addEventListener('click', handleLogin);
   }
-
-  // Start button logic
-  const startBtn = document.getElementById('startBtn');
-  if (startBtn) {
-    startBtn.addEventListener('click', startExperience);
-  }
+  // The 'startBtn' event listener has been removed here and moved to 'onclick' in the HTML.
 
   // Update umur every second
   updateUmur();
