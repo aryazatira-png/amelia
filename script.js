@@ -1,17 +1,14 @@
 /* ---------------------------
-  script.js (FULL REWRITE)
-  Include: login, umur, layer, lightbox, autoplay, rain, quotes, memory game, question layer
-  Paste replace file lama dengan ini (full file)
+  script.js (FINAL FIXED with Login)
+  Include: login, umur, layer, lightbox, autoplay, rain, random quotes, memory game
 --------------------------- */
-
-"use strict";
 
 let currentLayer = 0;
 let layers = [];
 let audio = null;
 let musicStarted = false;
 
-// ====== QUOTES DATA (full list copied as requested) ======
+// ====== QUOTES DATA (semua kata-kata lo) ======
 const quotes = [
   "MANEH NU BADMOOD kenapa sekitar yang lu diemin?",
   "Rek kitu wae?",
@@ -167,111 +164,104 @@ const quotes = [
   "Hajar ajaa, gak ada yang tau juga kan? Siapa tau menang"
 ];
 
-// Helper: safe text set
+// Helper to safely set text
 function safeSetText(id, text) {
   const el = document.getElementById(id);
   if (el) el.textContent = text;
 }
 
-// Wait DOM
-document.addEventListener('DOMContentLoaded', () => {
+// Wait for DOM ready
+document.addEventListener('DOMContentLoaded', function() {
   layers = Array.from(document.querySelectorAll('.layer'));
   audio = document.getElementById('bg-music');
 
-  // Show login first if exists (assume login layer is first in DOM)
-  const loginExists = !!document.getElementById('login') || layers.length && layers[0].id === 'login';
-  if (loginExists) {
-    showLayer(0);
-  } else {
-    showLayer(0); // fallback: show first
+  // Fix: Show the login layer first, which is at index 0
+  showLayer(0);
+
+  // Login button logic
+  const loginBtn = document.getElementById('loginBtn');
+  if (loginBtn) {
+    loginBtn.addEventListener('click', handleLogin);
   }
 
-  // Attach login handler - tolerant of different ids
-  const loginBtn = document.getElementById('login-btn') || document.getElementById('loginBtn') || document.getElementById('loginBtnMain');
-  const loginName = document.getElementById('login-name') || document.getElementById('username') || document.getElementById('loginName');
-  const loginPass = document.getElementById('login-pass') || document.getElementById('password') || document.getElementById('loginPass');
-
-  if (loginBtn && loginName && loginPass) {
-    loginBtn.addEventListener('click', () => {
-      const nameVal = (loginName.value || '').trim().toLowerCase();
-      const passVal = (loginPass.value || '').trim();
-      const CORRECT_NAME = 'amelia okta ramadani'; // keep this value as requested (lowercase with spaces)
-      const CORRECT_PASS = '111026';
-
-      if (nameVal === CORRECT_NAME && passVal === CORRECT_PASS) {
-        // hide login layer and go to splash
-        const loginLayerEl = document.getElementById('login') || layers[0];
-        if (loginLayerEl) {
-          // prefer using showLayer to keep consistent
-          // find index of splash (id splash)
-          const splashIndex = layers.findIndex(l => l.id === 'splash');
-          if (splashIndex >= 0) showLayer(splashIndex);
-          else showLayer(1);
-        }
-      } else {
-        // show inline message if available, else alert
-        const errEl = document.getElementById('login-error');
-        if (errEl) {
-          errEl.style.display = 'block';
-          // tiny shake
-          if (errEl.parentElement) {
-            const box = errEl.closest('.login-box') || errEl.parentElement;
-            try {
-              box.animate([{ transform: 'translateX(-6px)' }, { transform: 'translateX(6px)' }, { transform: 'translateX(0)' }], { duration: 300, iterations: 1 });
-            } catch (e) {}
-          }
-        } else {
-          alert('Nama atau password salah');
-        }
-      }
-    });
-
-    // allow Enter to submit
-    [loginName, loginPass].forEach(el => {
-      el.addEventListener('keydown', (e) => { if (e.key === 'Enter') loginBtn.click(); });
-    });
-  }
-
-  // Attach startBtn (on splash)
+  // Start button logic
   const startBtn = document.getElementById('startBtn');
   if (startBtn) {
-    startBtn.addEventListener('click', () => {
-      // go to the layer after splash: find index of layer1 or umur
-      const umurIndex = layers.findIndex(l => l.id === 'layer1' || l.id === 'umur' );
-      if (umurIndex >= 0) showLayer(umurIndex);
-      else {
-        // fallback: go to next
-        nextLayer();
-      }
-      forceMusicPlay();
-    });
+    startBtn.addEventListener('click', startExperience);
   }
 
-  // Attach lightbox close clicks (if user clicks outside)
-  const lightbox = document.getElementById('lightbox');
-  if (lightbox) {
-    lightbox.addEventListener('click', (e) => {
-      // close only when clicking on background (not on image/content)
-      if (e.target === lightbox) {
-        closeLightbox();
-      }
-    });
-  }
-
-  // update umur
+  // Update umur every second
   updateUmur();
   setInterval(updateUmur, 1000);
 
-  // autoplay setup
   setupChromeAutoplay();
 
-  // If question layer present (id question-layer or layer-question), attach behavior
-  setupQuestionLayer();
+  // ====== Tambahan untuk tombol Yes/No ======
+  const noBtn = document.getElementById("noBtn");
+  const yesBtn = document.getElementById("yesBtn");
+
+  if (yesBtn) {
+      yesBtn.addEventListener("click", function() {
+          alert("Hehehe tau bakal pilih Yes 😍");
+          // Lanjut ke layer terakhir kalo perlu
+          // showLayer(layers.length - 1);
+      });
+  }
+
+  if (noBtn) {
+      function moveNoButton() {
+          // Dapatkan ukuran container
+          const container = noBtn.parentElement;
+          const containerRect = container.getBoundingClientRect();
+
+          // Dapatkan ukuran tombol
+          const noBtnRect = noBtn.getBoundingClientRect();
+
+          // Hitung batas maksimum pergerakan
+          const maxX = containerRect.width - noBtnRect.width;
+          const maxY = containerRect.height - noBtnRect.height;
+          
+          // Pastikan pergerakan acak tidak melebihi batas layar
+          const randomX = Math.floor(Math.random() * maxX);
+          const randomY = Math.floor(Math.random() * maxY);
+
+          // Terapkan posisi baru
+          noBtn.style.position = 'absolute';
+          noBtn.style.left = `${randomX}px`;
+          noBtn.style.top = `${randomY}px`;
+      }
+      
+      // Menggunakan event 'mouseover' untuk PC/laptop
+      noBtn.addEventListener("mouseover", moveNoButton);
+      
+      // Menggunakan event 'touchstart' untuk HP
+      noBtn.addEventListener("touchstart", moveNoButton);
+  }
 });
 
-// -------------------- LAYER FUNCTIONS --------------------
+// New function for handling login
+function handleLogin() {
+  const usernameInput = document.getElementById("username").value.toLowerCase();
+  const passwordInput = document.getElementById("password").value;
+  const loginLayer = document.getElementById("login");
+
+  if (usernameInput === "amelia okta ramadani" && passwordInput === "111026") {
+    loginLayer.style.display = 'none'; // Sembunyikan layer login
+    startExperience(); // Lanjutkan ke layer splash
+  } else {
+    alert("Username atau password salah!");
+  }
+}
+
+// start experience
+function startExperience() {
+  // Fix: The splash screen is now at index 1, not 0
+  showLayer(1);
+  forceMusicPlay();
+}
+
+// show layer
 function showLayer(index) {
-  // clamp
   index = Math.max(0, Math.min(index, layers.length - 1));
   currentLayer = index;
 
@@ -287,47 +277,51 @@ function showLayer(index) {
 
   window.scrollTo(0, 0);
 
-  // init memory if hitting memory layer (support id 'layer4' or 'memory' index detection)
-  const activeId = layers[index] && layers[index].id;
-  if (activeId === 'layer4' || activeId === 'memory' || index === 4) {
-    initMemoryGame();
-  }
+  // kalau masuk layer 4, mulai memory game
+  if (index === 4) initMemoryGame();
 }
 
 function nextLayer() {
   forceMusicPlay();
-  // prevent next if currently on login (index 0) and login element exists
-  if (layers[0] && layers[0].id === 'login' && currentLayer === 0) return;
-  const next = Math.min(currentLayer + 1, layers.length - 1);
-  showLayer(next);
+  // Fix: Check if we are on the login screen
+  if (currentLayer === 0) return;
+
+  currentLayer = Math.min(currentLayer + 1, layers.length - 1);
+  showLayer(currentLayer);
 }
 
 function prevLayer() {
   forceMusicPlay();
-  // cannot go back from login
-  if (layers[0] && layers[0].id === 'login' && currentLayer === 0) return;
-  const prev = Math.max(currentLayer - 1, 0);
-  showLayer(prev);
+  // Fix: Check if we are on the login screen
+  if (currentLayer === 0) return;
+
+  currentLayer = Math.max(currentLayer - 1, 0);
+  showLayer(currentLayer);
 }
 
-// -------------------- LIGHTBOX --------------------
-function openLightbox(imgEl, caption = "") {
-  if (!imgEl) return;
-  const lb = document.getElementById('lightbox');
-  const lbImg = document.getElementById('lightbox-img');
-  const lbCaption = document.getElementById('lightbox-caption');
-  if (!lb) return;
-  lb.style.display = 'flex';
-  if (lbImg && imgEl.src) lbImg.src = imgEl.src;
-  if (lbCaption) lbCaption.textContent = caption || imgEl.alt || '';
+// lightbox
+function openLightbox(img, caption = "") {
+  forceMusicPlay();
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img');
+  const lightboxCaption = document.getElementById('lightbox-caption');
+  if (!lightbox) return;
+
+  lightbox.style.display = 'flex';
+  lightbox.classList.remove('hidden');
+
+  if (lightboxImg && img && img.src) lightboxImg.src = img.src;
+  if (lightboxCaption) lightboxCaption.textContent = caption || (img && img.alt) || "";
 }
+
 function closeLightbox() {
-  const lb = document.getElementById('lightbox');
-  if (!lb) return;
-  lb.style.display = 'none';
+  const lightbox = document.getElementById('lightbox');
+  if (!lightbox) return;
+  lightbox.style.display = 'none';
+  lightbox.classList.add('hidden');
 }
 
-// -------------------- UMUR --------------------
+// umur
 function updateUmur() {
   const lahir = new Date("2006-10-11T00:00:00");
   const sekarang = new Date();
@@ -352,7 +346,7 @@ function updateUmur() {
   safeSetText('umur', `${tahun} tahun, ${bulan} bulan, ${hari} hari, ${jam} jam, ${menit} menit, ${detik} detik`);
 }
 
-// -------------------- AUDIO AUTOPLAY (Chrome friendly) --------------------
+// audio autoplay
 function setupChromeAutoplay() {
   if (!audio) return;
   audio.loop = true;
@@ -360,10 +354,11 @@ function setupChromeAutoplay() {
   audio.preload = 'auto';
 
   const triggers = ['click', 'touchstart', 'touchend', 'keydown', 'mousedown'];
-  triggers.forEach(ev => document.addEventListener(ev, tryAutoplay, { once: false }));
+  triggers.forEach(ev => document.addEventListener(ev, forceMusicPlay, { once: false }));
 
   tryAutoplay();
 }
+
 function tryAutoplay() {
   if (!audio || musicStarted) return;
   const p = audio.play();
@@ -372,6 +367,7 @@ function tryAutoplay() {
      .catch(() => {});
   }
 }
+
 function forceMusicPlay() {
   if (!audio) return;
   if (!musicStarted) {
@@ -379,30 +375,26 @@ function forceMusicPlay() {
     audio.volume = 0.7;
     audio.play().then(() => { musicStarted = true; }).catch(() => {});
   } else {
-    if (audio.paused) audio.play().catch(()=>{});
+    if (audio.paused) audio.play().catch(() => {});
   }
 }
+
 document.addEventListener('visibilitychange', () => { if (!document.hidden) forceMusicPlay(); });
 window.addEventListener('focus', forceMusicPlay);
 
-// -------------------- RAIN EFFECT --------------------
+// rain effect
 const RAIN_SRC = 'asset/hujan.png';
 let rainRunning = false;
+
 function startRain(event) {
   if (rainRunning) return;
   rainRunning = true;
+
   const btn = event?.target;
   if (btn) btn.disabled = true;
 
   const container = document.createElement('div');
   container.className = 'rain-container';
-  container.style.position = 'fixed';
-  container.style.top = '0';
-  container.style.left = '0';
-  container.style.width = '100%';
-  container.style.height = '100%';
-  container.style.pointerEvents = 'none';
-  container.style.zIndex = '9999';
   document.body.appendChild(container);
 
   const jumlah = 20;
@@ -413,11 +405,7 @@ function startRain(event) {
       const img = document.createElement('img');
       img.src = RAIN_SRC;
       img.className = 'raindrop';
-      img.style.position = 'absolute';
       img.style.left = Math.random() * (window.innerWidth - 40) + 'px';
-      img.style.top = '-60px';
-      img.style.width = '40px';
-      img.style.pointerEvents = 'none';
       img.style.animationDuration = (2 + Math.random() * 3) + 's';
       container.appendChild(img);
 
@@ -430,10 +418,11 @@ function startRain(event) {
     rainRunning = false;
   }, maxLife + jumlah * 200);
 
+  // tombol bisa diklik lagi setelah 3 detik
   setTimeout(() => { if (btn) btn.disabled = false; }, 3000);
 }
 
-// -------------------- RANDOM QUOTE --------------------
+// random quote
 function randomQuote() {
   const target = document.getElementById('random-quote') || document.getElementById('random-text');
   if (!target) return;
@@ -441,8 +430,7 @@ function randomQuote() {
   target.textContent = quotes[idx];
 }
 
-// -------------------- MEMORY GAME --------------------
-// This version builds cards dynamically and ensures flip toggles show front face image
+// ========== MEMORY GAME (Layer 4) ==========
 let memoryFlipped = [];
 let memoryLock = false;
 
@@ -450,10 +438,9 @@ function initMemoryGame() {
   const game = document.getElementById('memory-game');
   if (!game) return;
 
-  // Clear existing content
+  // Clear existing cards
   game.innerHTML = '';
 
-  // Data for unique cards
   const cardsData = [
     { name: "amel1", src: "asset/amel1.jpeg" },
     { name: "amel2", src: "asset/amel2.jpeg" },
@@ -461,150 +448,57 @@ function initMemoryGame() {
     { name: "amel4", src: "asset/amel4.jpeg" }
   ];
 
-  // Duplicate and shuffle
-  const deck = [...cardsData, ...cardsData].sort(() => Math.random() - 0.5);
+  const cards = [...cardsData, ...cardsData];
 
-  deck.forEach(cardData => {
+  // shuffle
+  cards.sort(() => Math.random() - 0.5);
+
+  cards.forEach(cardData => {
     const card = document.createElement('div');
-    card.className = 'memory-card';
+    card.classList.add('memory-card');
     card.dataset.name = cardData.name;
-
-    // Create back and front elements (img tags) - keep order back then front in DOM so back shows initially
-    const back = document.createElement('img');
-    back.className = 'back-face';
-    back.src = 'asset/back.jpeg';
-    back.alt = 'back';
-
-    const front = document.createElement('img');
-    front.className = 'front-face';
-    front.src = cardData.src;
-    front.alt = cardData.name;
-
-    // Append: back then front
-    card.appendChild(back);
-    card.appendChild(front);
-
-    // click handler
+    card.innerHTML = `
+      <img class="front-face" src="${cardData.src}" alt="${cardData.name}">
+      <img class="back-face" src="asset/back.jpeg" alt="back">
+    `;
     card.addEventListener('click', onMemoryCardClick);
     game.appendChild(card);
   });
-
-  // Reset state variables
-  memoryFlipped = [];
-  memoryLock = false;
-  // Ensure next button hidden
-  const nextBtn = document.getElementById('nextBtnLayer4');
-  if (nextBtn) nextBtn.style.display = 'none';
 }
 
 function onMemoryCardClick(e) {
   const card = e.currentTarget;
-  if (!card) return;
-  if (memoryLock) return;
-  if (card.classList.contains('flip')) return;
+  if (memoryLock || card.classList.contains('flip')) return;
 
-  // flip card (CSS must handle .flip to rotate and show front-face)
   card.classList.add('flip');
   memoryFlipped.push(card);
 
   if (memoryFlipped.length === 2) {
-    memoryLock = true;
-    setTimeout(() => { checkMemoryMatch(); }, 250);
+    checkMemoryMatch();
   }
 }
 
 function checkMemoryMatch() {
   const [c1, c2] = memoryFlipped;
-  if (!c1 || !c2) {
-    memoryFlipped = [];
-    memoryLock = false;
-    return;
-  }
+  const match = c1.dataset.name === c2.dataset.name;
 
-  const isMatch = c1.dataset.name === c2.dataset.name;
-  if (isMatch) {
-    // keep flipped and remove listener
+  if (match) {
     c1.removeEventListener('click', onMemoryCardClick);
     c2.removeEventListener('click', onMemoryCardClick);
     memoryFlipped = [];
-    memoryLock = false;
 
-    // check if all matched
-    const allCards = document.querySelectorAll('.memory-card');
-    const flippedCards = Array.from(allCards).filter(c => c.classList.contains('flip'));
-    if (flippedCards.length === allCards.length) {
-      const nextBtn = document.getElementById('nextBtnLayer4');
-      if (nextBtn) nextBtn.style.display = 'inline-block';
+    // Check if all cards are matched
+    const flippedCards = document.querySelectorAll('.memory-card.flip');
+    if (flippedCards.length === document.querySelectorAll('.memory-card').length) {
+      document.getElementById("nextBtnLayer4").style.display = "inline-block";
     }
   } else {
-    // unflip after a short delay to let user see
+    memoryLock = true;
     setTimeout(() => {
       c1.classList.remove('flip');
       c2.classList.remove('flip');
       memoryFlipped = [];
       memoryLock = false;
-    }, 700);
+    }, 1000);
   }
 }
-
-// -------------------- QUESTION LAYER (Yes/No) --------------------
-function setupQuestionLayer() {
-  // If HTML contains question layer with id 'question-layer' or 'layer-question', enable behavior
-  const qLayer = document.getElementById('question-layer') || document.getElementById('layer-question') || document.getElementById('layer8');
-  if (!qLayer) return;
-
-  // find yes/no buttons (ids tolerant)
-  const yesBtn = qLayer.querySelector('.yes-btn') || qLayer.querySelector('#yes-btn');
-  const noBtn = qLayer.querySelector('.no-btn') || qLayer.querySelector('#no-btn');
-
-  if (!yesBtn || !noBtn) return;
-
-  // yes -> go next
-  yesBtn.addEventListener('click', () => {
-    // go to next layer (if any)
-    nextLayer();
-  });
-
-  // no -> avoid being clicked: on mouseenter or focus move to random position inside layer
-  noBtn.addEventListener('mouseenter', () => {
-    moveButtonRandomly(noBtn, qLayer);
-  });
-  // also on click try to move (prevents click on touch screens where hover isn't fired)
-  noBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    moveButtonRandomly(noBtn, qLayer);
-  });
-
-  // Ensure qLayer has proper style so background video (if present) shows and buttons positioned
-  qLayer.style.position = qLayer.style.position || 'relative';
-}
-
-function moveButtonRandomly(btn, container) {
-  // container bounding
-  const rect = container.getBoundingClientRect();
-  const btnRect = btn.getBoundingClientRect();
-
-  // compute random left/top inside container padding (avoid edges)
-  const maxLeft = Math.max(0, rect.width - btnRect.width - 20);
-  const maxTop = Math.max(0, rect.height - btnRect.height - 20);
-
-  const left = Math.floor(10 + Math.random() * maxLeft);
-  const top = Math.floor(10 + Math.random() * maxTop);
-
-  // position absolute relative to container
-  btn.style.position = 'absolute';
-  btn.style.left = `${left}px`;
-  btn.style.top = `${top}px`;
-  btn.style.transition = 'left 140ms ease, top 140ms ease';
-}
-
-// -------------------- EXPORT (optional global helpers) --------------------
-window.nextLayer = nextLayer;
-window.prevLayer = prevLayer;
-window.openLightbox = openLightbox;
-window.closeLightbox = closeLightbox;
-window.randomQuote = randomQuote;
-window.startRain = startRain;
-window.initMemoryGame = initMemoryGame;
-
-/* End of script.js */
