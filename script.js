@@ -113,7 +113,7 @@ const quotes = [
   "Amel pantas dicintai kok, asal avoidantnya dihilangin dulu🤭",
   "Lu tuh cantik banget, cuman pura pura gak tau",
   "Sia mun asbun sok kurang ajar",
-  "Kenapa maneh kurang ajar na ka aing hgkl??",
+  "Kenapa maneh kurang aing hgkl??",
   "Amel spesial dengan cara Amel sendiri",
   "Gak bakalan ada yang bisa sama kayak diri lu",
   "Semuanya ada alasan!",
@@ -197,7 +197,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   if (yesBtn) {
       yesBtn.addEventListener("click", function() {
-          alert("udah pasti iya suka lahh, wong cowok nya sekeren aing😎");
+          alert("WKWK,UDAH PASTI IYA DONG, TCIHH COWOK SEKEREN AING, MAU SUKA JUGA WAJAR AJA😜😎");
       });
   }
 
@@ -242,7 +242,6 @@ function startExperience() {
 }
 
 function showLayer(index) {
-  // NEW: Hentikan semua efek hujan sebelum pindah layer
   stopRain();
 
   index = Math.max(0, Math.min(index, layers.length - 1));
@@ -360,13 +359,10 @@ document.addEventListener('visibilitychange', () => { if (!document.hidden) forc
 window.addEventListener('focus', forceMusicPlay);
 
 
-// NEW FUNCTION: Stop the rain effect and clear its timers
 function stopRain() {
-  // Clear any pending timeouts to stop new raindrops from appearing
   rainTimeouts.forEach(id => clearTimeout(id));
   rainTimeouts = [];
 
-  // Remove all existing raindrops from the page
   const rainImages = document.querySelectorAll('.raindrop');
   rainImages.forEach(img => {
     img.remove();
@@ -378,11 +374,12 @@ function stopRain() {
   rainRunning = false;
 }
 
-// rain effect
 const RAIN_SRC = 'asset/hujan.png';
 
 function startRain() {
-  if (rainRunning) return;
+  if (rainRunning) {
+    return;
+  }
   rainRunning = true;
 
   const container = document.createElement('div');
@@ -401,19 +398,18 @@ function startRain() {
       img.style.animationDuration = (2 + Math.random() * 3) + 's';
       container.appendChild(img);
     }, i * 160);
-    // NEW: Simpan ID timeout ke dalam array
     rainTimeouts.push(timeoutId);
   }
 
-  // Set timeout untuk membersihkan container setelah efek selesai
   const cleanupTimeout = setTimeout(() => {
-    if (container && container.parentNode) container.remove();
+    if (container && container.parentNode) {
+      container.remove();
+    }
     rainRunning = false;
   }, maxLife + jumlah * 200);
   rainTimeouts.push(cleanupTimeout);
 }
 
-// random quote
 function randomQuote() {
   const target = document.getElementById('random-quote') || document.getElementById('random-text');
   if (!target) return;
@@ -447,7 +443,7 @@ function initMemoryGame() {
     card.classList.add('memory-card');
     card.dataset.name = cardData.name;
     card.innerHTML = `
-      <img class="front-face" src="${cardData.src}" alt="${cardData.name}">
+      <img class="front-face" src="asset/${cardData.name}.jpeg" alt="${cardData.name}">
       <img class="back-face" src="asset/back.jpeg" alt="back">
     `;
     card.addEventListener('click', onMemoryCardClick);
