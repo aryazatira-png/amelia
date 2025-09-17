@@ -8,6 +8,11 @@ let layers = [];
 let audio = null;
 let musicStarted = false;
 
+// NEW: Array untuk menyimpan ID timeout hujan
+let rainTimeouts = [];
+let rainRunning = false;
+
+
 // ====== QUOTES DATA (semua kata-kata lo) ======
 const quotes = [
   "MANEH NU BADMOOD kenapa sekitar yang lu diemin?",
@@ -175,87 +180,71 @@ document.addEventListener('DOMContentLoaded', function() {
   layers = Array.from(document.querySelectorAll('.layer'));
   audio = document.getElementById('bg-music');
 
-  // Fix: Show the login layer first, which is at index 0
   showLayer(0);
 
-  // Login button logic
   const loginBtn = document.getElementById('loginBtn');
   if (loginBtn) {
     loginBtn.addEventListener('click', handleLogin);
   }
-  // The 'startBtn' event listener has been removed here and moved to 'onclick' in the HTML.
 
-  // Update umur every second
   updateUmur();
   setInterval(updateUmur, 1000);
 
   setupChromeAutoplay();
 
-  // ====== Tambahan untuk tombol Yes/No ======
   const noBtn = document.getElementById("noBtn");
   const yesBtn = document.getElementById("yesBtn");
 
   if (yesBtn) {
       yesBtn.addEventListener("click", function() {
-          alert("Hehehe tau bakal pilih Yes 😍");
-          // Lanjut ke layer terakhir kalo perlu
-          // showLayer(layers.length - 1);
+          alert("udah pasti iya suka lahh, wong cowok nya sekeren aing😎");
       });
   }
 
   if (noBtn) {
       function moveNoButton() {
-          // Dapatkan ukuran container
           const container = noBtn.parentElement;
           const containerRect = container.getBoundingClientRect();
           const btnRect = noBtn.getBoundingClientRect();
           
-          // Hitung batas maksimum pergerakan
-          // Gunakan window.innerWidth dan window.innerHeight untuk memastikan tombol tidak keluar layar
           const maxX = window.innerWidth - btnRect.width;
           const maxY = window.innerHeight - btnRect.height;
           
           const randomX = Math.floor(Math.random() * maxX);
           const randomY = Math.floor(Math.random() * maxY);
 
-          // Terapkan posisi baru
-          noBtn.style.position = 'fixed'; // Gunakan 'fixed' agar posisinya stabil
+          noBtn.style.position = 'fixed'; 
           noBtn.style.left = `${randomX}px`;
           noBtn.style.top = `${randomY}px`;
       }
       
-      // Menggunakan event 'mouseover' untuk PC/laptop
       noBtn.addEventListener("mouseover", moveNoButton);
-      
-      // Menggunakan event 'touchstart' untuk HP
       noBtn.addEventListener("touchstart", moveNoButton);
   }
 });
 
-// New function for handling login
 function handleLogin() {
   const usernameInput = document.getElementById("username").value.toLowerCase();
   const passwordInput = document.getElementById("password").value;
   const loginLayer = document.getElementById("login");
 
   if (usernameInput === "amelia okta ramadani" && passwordInput === "111026") {
-    loginLayer.style.display = 'none'; // Sembunyikan layer login
-    // FIX: Mengganti index layer dari 2 menjadi 1 untuk menampilkan layer splash yang benar
+    loginLayer.style.display = 'none'; 
     showLayer(1); 
   } else {
     alert("Username atau password salah!");
   }
 }
 
-// start experience
 function startExperience() {
-  // FIX: Mengganti index layer dari 1 menjadi 2 untuk menampilkan layer1 yang benar
   showLayer(2);
   forceMusicPlay();
 }
 
-// show layer
 function showLayer(index) {
+  // NEW: Hentikan semua efek hujan sebelum pindah layer
+  stopRain();
+
   index = Math.max(0, Math.min(index, layers.length - 1));
   currentLayer = index;
 
@@ -271,13 +260,11 @@ function showLayer(index) {
 
   window.scrollTo(0, 0);
 
-  // kalau masuk layer 4, mulai memory game
   if (index === 4) initMemoryGame();
 }
 
 function nextLayer() {
   forceMusicPlay();
-  // Fix: Check if we are on the login screen
   if (currentLayer === 0) return;
 
   currentLayer = Math.min(currentLayer + 1, layers.length - 1);
@@ -286,14 +273,12 @@ function nextLayer() {
 
 function prevLayer() {
   forceMusicPlay();
-  // Fix: Check if we are on the login screen
   if (currentLayer === 0) return;
 
   currentLayer = Math.max(currentLayer - 1, 0);
   showLayer(currentLayer);
 }
 
-// lightbox
 function openLightbox(img, caption = "") {
   forceMusicPlay();
   const lightbox = document.getElementById('lightbox');
@@ -315,7 +300,6 @@ function closeLightbox() {
   lightbox.classList.add('hidden');
 }
 
-// umur
 function updateUmur() {
   const lahir = new Date("2006-10-11T00:00:00");
   const sekarang = new Date();
@@ -340,7 +324,6 @@ function updateUmur() {
   safeSetText('umur', `${tahun} tahun, ${bulan} bulan, ${hari} hari, ${jam} jam, ${menit} menit, ${detik} detik`);
 }
 
-// audio autoplay
 function setupChromeAutoplay() {
   if (!audio) return;
   audio.loop = true;
@@ -376,16 +359,31 @@ function forceMusicPlay() {
 document.addEventListener('visibilitychange', () => { if (!document.hidden) forceMusicPlay(); });
 window.addEventListener('focus', forceMusicPlay);
 
+
+// NEW FUNCTION: Stop the rain effect and clear its timers
+function stopRain() {
+  // Clear any pending timeouts to stop new raindrops from appearing
+  rainTimeouts.forEach(id => clearTimeout(id));
+  rainTimeouts = [];
+
+  // Remove all existing raindrops from the page
+  const rainImages = document.querySelectorAll('.raindrop');
+  rainImages.forEach(img => {
+    img.remove();
+  });
+  const rainContainer = document.querySelector('.rain-container');
+  if (rainContainer) {
+    rainContainer.remove();
+  }
+  rainRunning = false;
+}
+
 // rain effect
 const RAIN_SRC = 'asset/hujan.png';
-let rainRunning = false;
 
-function startRain(event) {
+function startRain() {
   if (rainRunning) return;
   rainRunning = true;
-
-  const btn = event?.target;
-  if (btn) btn.disabled = true;
 
   const container = document.createElement('div');
   container.className = 'rain-container';
@@ -395,25 +393,24 @@ function startRain(event) {
   const maxLife = 7000;
 
   for (let i = 0; i < jumlah; i++) {
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       const img = document.createElement('img');
       img.src = RAIN_SRC;
       img.className = 'raindrop';
       img.style.left = Math.random() * (window.innerWidth - 40) + 'px';
       img.style.animationDuration = (2 + Math.random() * 3) + 's';
       container.appendChild(img);
-
-      setTimeout(() => { if (img && img.parentNode) img.remove(); }, maxLife - 1000);
     }, i * 160);
+    // NEW: Simpan ID timeout ke dalam array
+    rainTimeouts.push(timeoutId);
   }
 
-  setTimeout(() => {
+  // Set timeout untuk membersihkan container setelah efek selesai
+  const cleanupTimeout = setTimeout(() => {
     if (container && container.parentNode) container.remove();
     rainRunning = false;
   }, maxLife + jumlah * 200);
-
-  // tombol bisa diklik lagi setelah 3 detik
-  setTimeout(() => { if (btn) btn.disabled = false; }, 3000);
+  rainTimeouts.push(cleanupTimeout);
 }
 
 // random quote
@@ -432,7 +429,6 @@ function initMemoryGame() {
   const game = document.getElementById('memory-game');
   if (!game) return;
 
-  // Clear existing cards
   game.innerHTML = '';
 
   const cardsData = [
@@ -444,7 +440,6 @@ function initMemoryGame() {
 
   const cards = [...cardsData, ...cardsData];
 
-  // shuffle
   cards.sort(() => Math.random() - 0.5);
 
   cards.forEach(cardData => {
@@ -481,7 +476,6 @@ function checkMemoryMatch() {
     c2.removeEventListener('click', onMemoryCardClick);
     memoryFlipped = [];
 
-    // Check if all cards are matched
     const flippedCards = document.querySelectorAll('.memory-card.flip');
     if (flippedCards.length === document.querySelectorAll('.memory-card').length) {
       document.getElementById("nextBtnLayer4").style.display = "inline-block";
