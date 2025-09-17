@@ -245,7 +245,8 @@ function handleLogin() {
 
   if (usernameInput === "amelia okta ramadani" && passwordInput === "111026") {
     loginLayer.style.display = 'none'; // Sembunyikan layer login
-    startExperience(); // Lanjutkan ke layer splash
+    // FIX: Mengganti index layer dari 2 menjadi 1 untuk menampilkan layer splash yang benar
+    showLayer(1); 
   } else {
     alert("Username atau password salah!");
   }
@@ -253,8 +254,8 @@ function handleLogin() {
 
 // start experience
 function startExperience() {
-  // FIX: Mengganti index layer dari 2 menjadi 1 untuk menampilkan layer splash yang benar
-  showLayer(1);
+  // FIX: Mengganti index layer dari 1 menjadi 2 untuk menampilkan layer1 yang benar
+  showLayer(2);
   forceMusicPlay();
 }
 
