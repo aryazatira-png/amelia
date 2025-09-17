@@ -1,6 +1,6 @@
 /* ---------------------------
   script.js (FINAL FIXED with Login)
-  Include: login, umur, layer, lightbox, autoplay, rain, random quotes, memory game
+  Include: login, umur, layer, lightbox, autoplay, rain, random quotes, memory game, dan tombol yes/no
 --------------------------- */
 
 let currentLayer = 0;
@@ -213,20 +213,18 @@ document.addEventListener('DOMContentLoaded', function() {
           // Dapatkan ukuran container
           const container = noBtn.parentElement;
           const containerRect = container.getBoundingClientRect();
-
-          // Dapatkan ukuran tombol
-          const noBtnRect = noBtn.getBoundingClientRect();
-
-          // Hitung batas maksimum pergerakan
-          const maxX = containerRect.width - noBtnRect.width;
-          const maxY = containerRect.height - noBtnRect.height;
+          const btnRect = noBtn.getBoundingClientRect();
           
-          // Pastikan pergerakan acak tidak melebihi batas layar
+          // Hitung batas maksimum pergerakan
+          // Gunakan window.innerWidth dan window.innerHeight untuk memastikan tombol tidak keluar layar
+          const maxX = window.innerWidth - btnRect.width;
+          const maxY = window.innerHeight - btnRect.height;
+          
           const randomX = Math.floor(Math.random() * maxX);
           const randomY = Math.floor(Math.random() * maxY);
 
           // Terapkan posisi baru
-          noBtn.style.position = 'absolute';
+          noBtn.style.position = 'fixed'; // Gunakan 'fixed' agar posisinya stabil
           noBtn.style.left = `${randomX}px`;
           noBtn.style.top = `${randomY}px`;
       }
