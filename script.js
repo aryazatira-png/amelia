@@ -197,7 +197,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   if (yesBtn) {
       yesBtn.addEventListener("click", function() {
-          alert("WKWK,UDAH PASTI IYA DONG, TCIHH COWOK SEKEREN AING, MAU SUKA JUGA WAJAR AJA😜😎");
+          alert("udah pasti iya dongg cowo SEPINTER dan SEKEREN aing gini🤭, BTW SEKALI LAGI HAPPY BIRTHDAY ACMELIA🥳");
       });
   }
 
