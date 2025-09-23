@@ -113,7 +113,7 @@ const quotes = [
   "Amel pantas dicintai kok, asal avoidantnya dihilangin dulu🤭",
   "Lu tuh cantik banget, cuman pura pura gak tau",
   "Sia mun asbun sok kurang ajar",
-  "Kenapa maneh kurang aing hgkl??",
+  "Kenapa maneh kurang ajar cuman ke aing hgkl??",
   "Amel spesial dengan cara Amel sendiri",
   "Gak bakalan ada yang bisa sama kayak diri lu",
   "Semuanya ada alasan!",
