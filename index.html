@@ -201,6 +201,39 @@
     #layerQuestion .title {
       margin-bottom: 20px;
     }
+
+    /* >>>>>> CSS BARU UNTUK GALLERY DI LAYERAkhir SAJA <<<<<< */
+    #layerAkhir .gallery {
+      display: flex; /* Menggunakan flexbox untuk berjajar ke samping */
+      flex-wrap: wrap; /* Memungkinkan item untuk pindah ke baris baru jika tidak muat */
+      justify-content: center; /* Pusatkan item secara horizontal */
+      gap: 10px; /* Jarak antar gambar */
+      max-width: 90%; /* Lebar maksimum galeri */
+      margin: 20px auto; /* Pusatkan galeri secara keseluruhan */
+      overflow-x: auto; /* Tambahkan scroll horizontal jika gambar terlalu banyak */
+      padding-bottom: 10px; /* Sedikit padding bawah jika ada scroll */
+    }
+
+    #layerAkhir .gallery img {
+      width: 100px; /* Ukuran gambar yang lebih kecil */
+      height: 120px; /* Tinggi gambar yang proporsional */
+      object-fit: cover; /* Pastikan gambar mengisi ruang tanpa terdistorsi */
+      border-radius: 8px; /* Sudut membulat pada gambar */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Bayangan kecil */
+      transition: transform 0.2s ease;
+    }
+
+    #layerAkhir .gallery img:hover {
+      transform: scale(1.05); /* Efek zoom saat dihover */
+    }
+
+    /* Opsi tambahan untuk layar yang lebih besar */
+    @media (min-width: 768px) {
+      #layerAkhir .gallery img {
+        width: 120px; /* Sedikit lebih besar di desktop */
+        height: 150px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -372,13 +405,12 @@
         <button id="noBtn">ENGGAK</button>
       </div>
       <button onclick="prevLayer()">⬅ Back</button>
-    <button onclick="nextLayer()">Last ➡</button>
     </div>
   </div>
 
   <div id="layerAkhir" class="layer">
     <video autoplay muted loop class="bg-video">
-      <source src="asset/videobaru.mp4" type="video/mp4">
+      <source src="asset/akhir.mp4" type="video/mp4">
     </video>
     <div class="overlay"></div>
     <h2 class="glow-text">SEKALI LAGI HBD🥳</h2>
