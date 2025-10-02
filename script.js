@@ -17,13 +17,13 @@ let rainRunning = false;
 const quotes = [
   "MANEH NU BADMOOD kenapa sekitar yang lu diemin?",
   "Rek kitu wae?",
-  "Ulah sok ijut, asbun mah asbun we",
+  "lebih baik menjelaskan daripada diam dan membiarkan",
   "Kamu punya kekuatan buat ngelewatin semua hari berat, jangan pernah ngeremehin diri sendiri.",
   "Cantikmu bukan cuma di luar, tapi juga dari cara kamu mikir",
   "Jangan lupa, kamu tuh punya nilai yang nggak bisa digantiin sama siapa pun.",
   "Kamu itu berharga, bahkan di hari-hari ketika kamu ngerasa biasa aja.",
   "mama teacher papah engineer OR mama teacher papah lawyer? 🤪",
-  "fakultas boleh red flag tapi sifatku mah green flag",
+  "HAPUS AVOIDANT LU",
   "Jangan pernah berhenti percaya sama diri kamu sendiri, karena banyak orang percaya sama kamu.",
   "Kamu cantik dengan caramu sendiri, nggak perlu ngebandingin diri sama siapa pun.",
   "Kamu punya aura yang bikin orang lain betah ada di deketmu.",
@@ -44,7 +44,7 @@ const quotes = [
   "Kamu tuh kayak matahari kecil, selalu ada cahaya bahkan di hari mendung.",
   "Jangan biarin komentar orang bikin kamu lupa betapa berharganya dirimu.",
   "Kamu cantik, tapi juga punya kekuatan buat berdiri sendiri.",
-  "Kamu punya cara unik buat bikin orang lain ketawa.",
+  "Gak semua orang bisa tahan dengan sifat silent treatment lu",
   "Jangan pernah mikir kamu sendirian, banyak orang yang care sama kamu.",
   "Kamu itu cantik, tapi yang bikin lebih indah adalah hatimu.",
   "Semangatmu adalah sesuatu yang patut dihargai, jangan biarin padam.",
@@ -88,7 +88,7 @@ const quotes = [
   "Akan ada orang yang jauh lebih baik datang dihidup amel",
   "Stay positive",
   "Terus jadi random jangan berubah",
-  "HAPUS SIFAT AVOIDANT LU ANJAY",
+  "HAPUS SIFAT AVOIDANT LU",
   "Jangan karena orang lain amel ngerubah kebahagiaan sendiri",
   "Maneh kayak iklan Shopee, menarik tapi berisik",
   "Cantik sih, tapi kalau marah ngilang kayak diculik hantu",
@@ -110,13 +110,13 @@ const quotes = [
   "Hari buruk bukan berarti hidupmu buruk",
   "Amelia okta ramadani",
   "Kamu gak perlu jadi matahari buat semua orang",
-  "Amel pantas dicintai kok, asal avoidantnya dihilangin dulu🤭",
+  "Amel pantas dicintai kok",
   "Lu tuh cantik banget, cuman pura pura gak tau",
   "Sia mun asbun sok kurang ajar",
   "Kenapa maneh kurang ajar cuman ke aing hgkl??",
   "Amel spesial dengan cara Amel sendiri",
   "Gak bakalan ada yang bisa sama kayak diri lu",
-  "Semuanya ada alasan!",
+  "Semuanya punya  alasan untuk terjadi",
   "And i give up forever to touch you",
   "Tuhan terlalu berlebihan naruh mahkluk kayak Amel di dunia yang gila ini",
   "Wkwkw di bantai kuliah ya?",
@@ -139,7 +139,7 @@ const quotes = [
   "Rehan or ilham?",
   "Bakso or mie ayam?",
   "Dimana lagi lu nemu temen segokil, sebaik, SEPINTER AING🤭😎",
-  "Mel, percaya semuanya tuh pasti ada alasan",
+  "percaya semuanya tuh pasti ada alasannya",
   "Itu bukan gagal, namanya juga kan belajar",
   "Nya bae we ngaran na g usaha",
   "Kadang emang jelema teh sok lewih lewih batan anjing😭",
@@ -150,9 +150,9 @@ const quotes = [
   "Orang hebat bukan berarti nggak pernah gagal",
   "Yang lebih baik dari diri lu emang banyak, but akan selalu ada perbedaan yg gak bisa orang lain tiru",
   "Moga masa depan lu gak pecah telinganya ngedenger bacotan lu",
-  "I will be a COOL UNCLE for your future child 🤙🏽",
+  "you will never know, if you never try",
   "Sakit ya? Wajar kok namanya juga punya hati",
-  "Nangis aja, orang juga gak bakalan peduli",
+  "with big power, comes big responsibility",
   "Hidupmu tergantung keputusanmu",
   "FOR A THOUSAND YEARS",
   "Kamu tuh kombinasi langka cantik + pintar + keras kepala + bacot",
@@ -197,7 +197,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   if (yesBtn) {
       yesBtn.addEventListener("click", function() {
-          alert("udah pasti iya dongg cowo SEPINTER dan SEKEREN aing gini🤭, BTW SEKALI LAGI HAPPY BIRTHDAY ACMELIA🥳");
+          alert("udah pasti iya dongg, udah keren banget gini");
       });
   }
 
