@@ -197,7 +197,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   if (yesBtn) {
       yesBtn.addEventListener("click", function() {
-          alert("udah pasti iya dongg, udah keren banget gini");
+          alert("just kidding!,elo terlalu plenger buat orang gacor kayak gweh🗣️");
       });
   }
 
