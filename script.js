@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   if (yesBtn) {
       yesBtn.addEventListener("click", function() {
-          alert("Iya deh iya, kamu keren gak sedih bahagia gara-gara semua hal inj");
+          alert("if I were u and somebody did this for me, I'll cry of happiness tbh");
       });
   }
 
