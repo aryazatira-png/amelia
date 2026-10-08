@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   if (yesBtn) {
       yesBtn.addEventListener("click", function() {
-          alert("to be honest, if I were u and somebody did this for me, I’ll just stare at this and my eyes will start welling up with tears.);
+          alert("to be honest, if I were u and somebody did this for me, I’ll just stare at this and my eyes will start welling up with tears.");
       });
   }
 
