@@ -277,10 +277,10 @@ function initMemoryGame() {
   game.innerHTML = '';
 
   const cardsData = [
-    { name: "amel1", src: "asset/amel1.jpeg" },
-    { name: "amel2", src: "asset/amel2.jpeg" },
-    { name: "amel3", src: "asset/amel3.jpeg" },
-    { name: "amel4", src: "asset/amel4.jpeg" }
+    { name: "mel1", src: "asset/mel1.jpeg" },
+    { name: "mel2", src: "asset/mel2.jpeg" },
+    { name: "mel3", src: "asset/mel3.jpeg" },
+    { name: "mel4", src: "asset/mel4.jpeg" }
   ];
 
   const cards = [...cardsData, ...cardsData];
